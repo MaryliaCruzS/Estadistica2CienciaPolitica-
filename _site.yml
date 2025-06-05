@@ -1,0 +1,37 @@
+name: "Estadistica2CienciaPolitica-"
+output_dir: "docs"  # Carpeta donde se guardarán los archivos HTML
+navbar:
+  title: "Estadística para el Análisis Político 2"
+  left:
+    - text: "Inicio"
+      href: index.html
+      
+    - text: "Unidad 1"
+      menu:
+      - text: "Modelo Lineal"
+        href: sesion1.html
+        
+    - text: "Unidad 2"
+      menu:
+      - text: "Regresión De Poisson"
+        href: sesion2.html
+      - text: "Regresión Logistica Binaria"
+        href: sesion3.html
+        
+    - text: "Unidad 3"
+      menu:
+      - text: "Clusters"
+        href: sesion4.html
+      - text: "Análisis Factorial"
+        href: sesion5.html
+
+    - text: "Extras"
+      menu:
+      - text: "Organización de datos"
+        href: sesion6.html
+
+
+output:
+  html_document:
+    theme: cosmo  # Tema visual de la web
+    css: styles.css  # Archivo CSS para personalizar

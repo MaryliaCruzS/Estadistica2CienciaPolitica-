@@ -1,0 +1,22 @@
+---
+title: "Estadística para el Análisis Político 2"
+autor: Marylia Cruz
+output: 
+  html_document:
+    theme: flatly  # Tema predeterminado de Bootstrap
+    css: styles.css  # Archivo de estilos
+---
+
+¡Hola a [tod\@s](mailto:tod@s){.email}!,
+
+Antes de empezar, quiero darles la bievenida al curso "Estadística para el Análisis Político 2". Mi objetivo es que vean la estadística como una herramienta poderosa para entender la complejidad del mundo, analizar datos y tomar mejores decisiones.
+
+La estadística está en todas partes y, si le dan una oportunidad, les puede abrir muchas puertas en su vida académica y profesional.Lo más importante es que vengan con curiosidad y mente abierta.
+
+# Equipo de soporte
+
+-   Marylia Cruz (Docente)
+
+-   Liz Crispin (Jefe de Práctica)
+
+-   Chiara Zamora (Jefe de Práctica)
