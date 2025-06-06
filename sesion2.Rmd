@@ -14,18 +14,290 @@ output: html_document
 ## Docente: Marylia Cruz <br>
 
 ------------------------------------------------------------------------
-
-## **Introducción a R**
-
+</br>
 
 
-<br></br>
+## **🎯 ¿Para qué sirve la Regresión de Poisson?**
+
+
+La regresión de Poisson es un modelo estadístico que se utiliza para **explicar una variable dependiente de tipo conteo**, es decir, cuando el resultado es un número entero no negativo (0, 1, 2, 3, ...), y representa la frecuencia con la que ocurre un evento.
+
+</br>
+
+## **📌 Ejemplos comunes de uso?**
+
+
+```{r, echo=FALSE, message=FALSE}
+knitr::kable(
+  data.frame(
+    Contexto = c(
+      "Salud pública",
+      "Sociología",
+      "Educación",
+      "Transporte"
+    ),
+    `Variable dependiente - conteo` = c(
+      "Número de hospitalizaciones por semana",
+      "Número de protestas por región",
+      "Número de cursos desaprobados",
+      "Número de accidentes en una avenida"
+    ),
+    `Variables independientes` = c(
+      "Edad, sexo, comorbilidades",
+      "Pobreza, educación, presencia estatal",
+      "Horas de estudio, asistencia",
+      "Iluminación, flujo vehicular"
+    )
+  ),
+  caption = "Ejemplos de aplicación de la regresión de Poisson",
+  format = "markdown"
+)
+
+```
+
+## **⚙️¿Cómo funciona?**
+
+La variable de respuesta $Y$ sigue una distribución de Poisson.
+
+El valor esperado de $Y$, denotado como $\lambda$, se relaciona con los predictores mediante una función logarítmica:
+
+El modelo de regresión de Poisson se expresa mediante la siguiente ecuación:
+
+$$
+\log(\lambda) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k
+$$
+
+donde:
+
+$$
+\lambda = e^{\beta_0 + \beta_1 X_1 + \dots + \beta_k X_k}
+$$
+
+Esto garantiza que $\lambda$ (el número esperado de eventos) siempre sea positivo.
+
+<br>
+
+## **🧪¿Cuándo usarla?**
+
+- La variable dependiente es un conteo (no continua, ni categórica)
+
+- Los valores son enteros ≥ 0
+
+- Los eventos son independientes
+
+- El conteo se produce en un intervalo fijo (tiempo, espacio, etc.)
+
+- La media ≈ varianza del conteo (si no, puede que necesites una regresión binomial negativa)
+
+## **🫶¿Cómo se realiza en R?**
+
+Utilizaremos la base de datos de Protestas.
+
+<a href="https://paideia.pucp.edu.pe/cursos/mod/resource/view.php?id=2373139">
+  <button>Descargar la base de datos</button>
+</a>
+
+```{r}
+library(rio)
+data=import("Protestas.xlsx")
+names(data)
+```
+
+*VD: Eventos de protestas:* Número de protestas realizadas en el 2022
+
+## **Evaluación de Supuestos**
+
+- Evaluar sobredispersión (varianza vs media)
+
+```{r}
+# Calcular media y varianza de la variable dependiente
+mean(data$EventosdeProtestas)
+var(data$EventosdeProtestas)
+
+# Sobredispersión si varianza > media significativamente
+```
+
+## **Regresión Poisson**
+
+Asumimos que si cumplimos el requisito:
+
+```{r}
+modelo_poisson <- glm(EventosdeProtestas ~ Salud + Educacion+Institucional, 
+                      data = data, 
+                      family = poisson())
+
+summary(modelo_poisson)
+```
+
+
+```{r}
+exp(coef(modelo_poisson))
+```
+
+
+## Interpretación de los coeficientes
+
+- **Intercepto (`(Intercept)` = 3.10)**  
+  Corresponde al logaritmo del número esperado de eventos cuando todas las variables independientes son cero.  
+  \[
+  \exp(3.10) \approx 22.3
+  \]  
+  Es decir, se espera un promedio de **22 eventos** cuando Salud, Educación e Institucional son 0.
+
+- **Salud (`coef = 0.32`, p < 0.001)**  
+  A medida que aumenta el factor "Salud", el número esperado de eventos **aumenta en un 38%**:  
+  \[
+  \exp(0.32) \approx 1.38
+  \]
+
+- **Educación (`coef = 0.06`, p ≈ 0.093)**  
+  Tiene un efecto débilmente positivo sobre el número de eventos, pero **no es estadísticamente significativa**.  
+  \[
+  \exp(0.06) \approx 1.07
+  \]  
+  Esto sugiere un posible aumento del 6.6% en los eventos, aunque con baja evidencia.
+
+- **Institucional (`coef = -0.33`, p < 0.001)**  
+  Tiene un efecto negativo claro. Un aumento en el componente institucional reduce el número esperado de eventos en un **28%**: 
+  
+  
+  \[
+  \exp(-0.33) \approx 0.72
+  \]
+
+
+## Conclusión
+
+El modelo sugiere que mayores niveles en el sector salud están relacionados con un aumento en las protestas, mientras que una mayor capacidad institucional está asociada con una reducción significativa en los eventos. La variable educación no presenta un efecto claro con suficiente evidencia estadística.
+
+## **🎯 ¿Por qué no basta la regresión de Poisson?**
+
+El modelo de Poisson asume que la varianza es igual a la media. Pero en datos reales de conteo (como protestas, enfermedades, delitos), eso casi nunca se cumple. Cuando hay sobredispersión, los errores estándar del modelo Poisson se subestiman, y los p-valores no son confiables.
+
+## Comparación entre modelos: Poisson, Quasi-Poisson y Binomial Negativa
+
+A continuación, se presenta una tabla comparativa entre los modelos usados para datos de conteo con sobredispersión:
+
+```{r, echo=FALSE, message=FALSE}
+library(knitr)
+
+kable(
+  data.frame(
+    Modelo = c("Poisson clásico", "Quasi-Poisson", "Binomial negativa"),
+    `Corrige varianza` = c("No", "Sí (φ·μ)", "Sí (μ + μ²/θ)"),
+    `Cambia coeficientes` = c("No", "No", "Sí"),
+    `Corrige errores estándar` = c("No", "Sí", "Sí"),
+    `Maneja sobredispersión fuerte` = c("No", "Moderadamente", "Sí"),
+    `Comparación con AIC posible` = c("Sí", "No", "Sí"),
+    `Paquete necesario` = c("base R", "base R", "MASS")
+  ),
+  caption = "Comparación entre modelos para conteo con sobredispersión"
+)
+```
+
+La diferencia está en la **varianza**:
+
+- **Poisson clásico:**
+
+$$
+\text{Var}(Y_i) = \mu_i
+$$
+
+## **Recomendaciones**
+
+- Usa Quasi-Poisson si solo quieres corregir los errores estándar sin alterar los coeficientes.
+
+- Usa Binomial negativa si la sobredispersión es significativa y quieres una mejor estimación del modelo y su ajuste.
+
+
+## **Regresión Quasi Poisson**
+
+Cuando te interesa ajustar varianza sin cambiar los coeficiente
+
+Permite que la varianza sea mayor que la media
+
+No cambia los coeficientes, pero ajusta los errores estándar para que los tests sean válidos
+
+$$
+\text{Var}(Y_i) = \phi \cdot \mu_i
+$$
+
+donde \( \phi \) es el parámetro de dispersión estimado para corregir la varianza.
+
+
+```{r}
+modelo_qp <- glm(EventosdeProtestas ~ Salud + Educacion+Institucional, data = data, family = quasipoisson())
+summary(modelo_qp)
+```
+
+
+## **Regresión Binomial Negativa**
+
+Este modelo introduce un parámetro adicional para manejar la sobredispersión.
+
+Te permite mantener la lógica de conteo, pero ajusta mejor la varianza.
+
+Ajusta directamente la varianza:
+
+En este modelo, la varianza depende **cuadráticamente** de la media:
+
+$$
+\log(\mu_i) = \beta_0 + \beta_1 X_{1i} + \dots + \beta_k X_{ki}
+$$
+
+$$
+\text{Var}(Y_i) = \mu_i + \frac{\mu_i^2}{\theta}
+$$
+
+donde \( \theta \) es el parámetro que controla la sobredispersión:  
+- Si \( \theta \to \infty \), se aproxima al modelo de Poisson.
+- Si \( \theta \) es pequeño, hay mucha sobredispersión.
+
+```{r}
+library(dplyr)
+# Este paso no es necesario, sirve para quedarnos solo con los departamentos con número de eventos de protestas menor a 100 en el aña 2022
+data=filter(data,EventosdeProtestas<100)
+```
+
+```{r}
+library(MASS)
+
+modelo_nb <- glm.nb(EventosdeProtestas ~ Salud + Educacion+Institucional, data = data)
+summary(modelo_nb)
+```
+El modelo con menor AIC es preferible.
+
+Si el modelo binomial negativa mejora el ajuste, confirma que la sobredispersión era relevante.
+
+```{r}
+AIC(modelo_poisson, modelo_qp,modelo_nb)
+
+```
+
+Deben estar más centrados y sin patrón evidente.
+
+```{r}
+plot(residuals(modelo_nb, type = "pearson"))
+
+```
+
+## **Ejercicio para casa**
+
+La base **quine** contiene información sobre ausentismo escolar de estudiantes en Australia, recolectada en un estudio sobre educación.
+
+Objetivo: Analizar qué factores están asociados al número de días de ausencia de los estudiantes durante un año escolar.
+
+```{r}
+library(MASS)
+head(quine)
+mean(quine$Days)
+var(quine$Days)
+```
+
 
 </style>
 
-<a href="">
-  <button>Descargar la base de datos</button>
-</a>
+
 
 <br></br> [Go to page beginning](#beginning)
 

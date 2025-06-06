@@ -271,6 +271,9 @@ $(document).ready(function () {
     <li>
       <a href="sesion3.html">Regresión Logistica Binaria</a>
     </li>
+    <li>
+      <a href="sesion6.html">Eventos históricos</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -296,7 +299,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="sesion6.html">Organización de datos</a>
+      <a href="sesion7.html">Organización de datos</a>
     </li>
   </ul>
 </li>
@@ -332,12 +335,428 @@ class="section level2">
 <div id="docente-marylia-cruz" class="section level2">
 <h2>Docente: Marylia Cruz <br></h2>
 <hr />
+<p></br></p>
 </div>
-<div id="introducción-a-r" class="section level2">
-<h2><strong>Introducción a R</strong></h2>
-<p><br></br></p>
+<div id="para-qué-sirve-la-regresión-de-poisson" class="section level2">
+<h2><strong>🎯 ¿Para qué sirve la Regresión de Poisson?</strong></h2>
+<p>La regresión de Poisson es un modelo estadístico que se utiliza para
+<strong>explicar una variable dependiente de tipo conteo</strong>, es
+decir, cuando el resultado es un número entero no negativo (0, 1, 2, 3,
+…), y representa la frecuencia con la que ocurre un evento.</p>
+<p></br></p>
+</div>
+<div id="ejemplos-comunes-de-uso" class="section level2">
+<h2><strong>📌 Ejemplos comunes de uso?</strong></h2>
+<table>
+<caption>Ejemplos de aplicación de la regresión de Poisson</caption>
+<colgroup>
+<col width="15%" />
+<col width="42%" />
+<col width="41%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Contexto</th>
+<th align="left">Variable.dependiente…conteo</th>
+<th align="left">Variables.independientes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Salud pública</td>
+<td align="left">Número de hospitalizaciones por semana</td>
+<td align="left">Edad, sexo, comorbilidades</td>
+</tr>
+<tr class="even">
+<td align="left">Sociología</td>
+<td align="left">Número de protestas por región</td>
+<td align="left">Pobreza, educación, presencia estatal</td>
+</tr>
+<tr class="odd">
+<td align="left">Educación</td>
+<td align="left">Número de cursos desaprobados</td>
+<td align="left">Horas de estudio, asistencia</td>
+</tr>
+<tr class="even">
+<td align="left">Transporte</td>
+<td align="left">Número de accidentes en una avenida</td>
+<td align="left">Iluminación, flujo vehicular</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="cómo-funciona" class="section level2">
+<h2><strong>⚙️¿Cómo funciona?</strong></h2>
+<p>La variable de respuesta <span class="math inline">\(Y\)</span> sigue
+una distribución de Poisson.</p>
+<p>El valor esperado de <span class="math inline">\(Y\)</span>, denotado
+como <span class="math inline">\(\lambda\)</span>, se relaciona con los
+predictores mediante una función logarítmica:</p>
+<p>El modelo de regresión de Poisson se expresa mediante la siguiente
+ecuación:</p>
+<p><span class="math display">\[
+\log(\lambda) = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k
+X_k
+\]</span></p>
+<p>donde:</p>
+<p><span class="math display">\[
+\lambda = e^{\beta_0 + \beta_1 X_1 + \dots + \beta_k X_k}
+\]</span></p>
+<p>Esto garantiza que <span class="math inline">\(\lambda\)</span> (el
+número esperado de eventos) siempre sea positivo.</p>
+<p><br></p>
+</div>
+<div id="cuándo-usarla" class="section level2">
+<h2><strong>🧪¿Cuándo usarla?</strong></h2>
+<ul>
+<li><p>La variable dependiente es un conteo (no continua, ni
+categórica)</p></li>
+<li><p>Los valores son enteros ≥ 0</p></li>
+<li><p>Los eventos son independientes</p></li>
+<li><p>El conteo se produce en un intervalo fijo (tiempo, espacio,
+etc.)</p></li>
+<li><p>La media ≈ varianza del conteo (si no, puede que necesites una
+regresión binomial negativa)</p></li>
+</ul>
+</div>
+<div id="cómo-se-realiza-en-r" class="section level2">
+<h2><strong>🫶¿Cómo se realiza en R?</strong></h2>
+<p>Utilizaremos la base de datos de Protestas.</p>
+<p><a href="https://paideia.pucp.edu.pe/cursos/mod/resource/view.php?id=2373139">
+<button>Descargar la base de datos</button> </a></p>
+<pre class="r"><code>library(rio)
+data=import(&quot;Protestas.xlsx&quot;)
+names(data)</code></pre>
+<pre><code>## [1] &quot;Departamento&quot;       &quot;EventosdeProtestas&quot; &quot;Competitividad&quot;    
+## [4] &quot;EntornoEconomico&quot;   &quot;Salud&quot;              &quot;Educacion&quot;         
+## [7] &quot;Laboral&quot;            &quot;Institucional&quot;</code></pre>
+<p><em>VD: Eventos de protestas:</em> Número de protestas realizadas en
+el 2022</p>
+</div>
+<div id="evaluación-de-supuestos" class="section level2">
+<h2><strong>Evaluación de Supuestos</strong></h2>
+<ul>
+<li>Evaluar sobredispersión (varianza vs media)</li>
+</ul>
+<pre class="r"><code># Calcular media y varianza de la variable dependiente
+mean(data$EventosdeProtestas)</code></pre>
+<pre><code>## [1] 39.84</code></pre>
+<pre class="r"><code>var(data$EventosdeProtestas)</code></pre>
+<pre><code>## [1] 3432.64</code></pre>
+<pre class="r"><code># Sobredispersión si varianza &gt; media significativamente</code></pre>
+</div>
+<div id="regresión-poisson" class="section level2">
+<h2><strong>Regresión Poisson</strong></h2>
+<p>Asumimos que si cumplimos el requisito:</p>
+<pre class="r"><code>modelo_poisson &lt;- glm(EventosdeProtestas ~ Salud + Educacion+Institucional, 
+                      data = data, 
+                      family = poisson())
+
+summary(modelo_poisson)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = EventosdeProtestas ~ Salud + Educacion + Institucional, 
+##     family = poisson(), data = data)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -8.925  -4.514  -1.848   1.437  17.176  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)    3.10353    0.18149  17.100  &lt; 2e-16 ***
+## Salud          0.32171    0.04520   7.118 1.10e-12 ***
+## Educacion      0.06426    0.03820   1.682   0.0926 .  
+## Institucional -0.32775    0.04198  -7.807 5.87e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for poisson family taken to be 1)
+## 
+##     Null deviance: 1236.84  on 24  degrees of freedom
+## Residual deviance:  883.47  on 21  degrees of freedom
+## AIC: 1015
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>exp(coef(modelo_poisson))</code></pre>
+<pre><code>##   (Intercept)         Salud     Educacion Institucional 
+##    22.2765258     1.3794891     1.0663699     0.7205399</code></pre>
+</div>
+<div id="interpretación-de-los-coeficientes" class="section level2">
+<h2>Interpretación de los coeficientes</h2>
+<ul>
+<li><p><strong>Intercepto (<code>(Intercept)</code> =
+3.10)</strong><br />
+Corresponde al logaritmo del número esperado de eventos cuando todas las
+variables independientes son cero.<br />
+<span class="math display">\[
+\exp(3.10) \approx 22.3
+\]</span><br />
+Es decir, se espera un promedio de <strong>22 eventos</strong> cuando
+Salud, Educación e Institucional son 0.</p></li>
+<li><p><strong>Salud (<code>coef = 0.32</code>, p &lt;
+0.001)</strong><br />
+A medida que aumenta el factor “Salud”, el número esperado de eventos
+<strong>aumenta en un 38%</strong>:<br />
+<span class="math display">\[
+\exp(0.32) \approx 1.38
+\]</span></p></li>
+<li><p><strong>Educación (<code>coef = 0.06</code>, p ≈
+0.093)</strong><br />
+Tiene un efecto débilmente positivo sobre el número de eventos, pero
+<strong>no es estadísticamente significativa</strong>.<br />
+<span class="math display">\[
+\exp(0.06) \approx 1.07
+\]</span><br />
+Esto sugiere un posible aumento del 6.6% en los eventos, aunque con baja
+evidencia.</p></li>
+<li><p><strong>Institucional (<code>coef = -0.33</code>, p &lt;
+0.001)</strong><br />
+Tiene un efecto negativo claro. Un aumento en el componente
+institucional reduce el número esperado de eventos en un
+<strong>28%</strong>:</p>
+<p><span class="math display">\[
+\exp(-0.33) \approx 0.72
+\]</span></p></li>
+</ul>
+</div>
+<div id="conclusión" class="section level2">
+<h2>Conclusión</h2>
+<p>El modelo sugiere que mayores niveles en el sector salud están
+relacionados con un aumento en las protestas, mientras que una mayor
+capacidad institucional está asociada con una reducción significativa en
+los eventos. La variable educación no presenta un efecto claro con
+suficiente evidencia estadística.</p>
+</div>
+<div id="por-qué-no-basta-la-regresión-de-poisson"
+class="section level2">
+<h2><strong>🎯 ¿Por qué no basta la regresión de Poisson?</strong></h2>
+<p>El modelo de Poisson asume que la varianza es igual a la media. Pero
+en datos reales de conteo (como protestas, enfermedades, delitos), eso
+casi nunca se cumple. Cuando hay sobredispersión, los errores estándar
+del modelo Poisson se subestiman, y los p-valores no son confiables.</p>
+</div>
+<div
+id="comparación-entre-modelos-poisson-quasi-poisson-y-binomial-negativa"
+class="section level2">
+<h2>Comparación entre modelos: Poisson, Quasi-Poisson y Binomial
+Negativa</h2>
+<p>A continuación, se presenta una tabla comparativa entre los modelos
+usados para datos de conteo con sobredispersión:</p>
+<table>
+<caption>Comparación entre modelos para conteo con
+sobredispersión</caption>
+<colgroup>
+<col width="11%" />
+<col width="10%" />
+<col width="12%" />
+<col width="16%" />
+<col width="19%" />
+<col width="17%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Modelo</th>
+<th align="left">Corrige.varianza</th>
+<th align="left">Cambia.coeficientes</th>
+<th align="left">Corrige.errores.estándar</th>
+<th align="left">Maneja.sobredispersión.fuerte</th>
+<th align="left">Comparación.con.AIC.posible</th>
+<th align="left">Paquete.necesario</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Poisson clásico</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">No</td>
+<td align="left">Sí</td>
+<td align="left">base R</td>
+</tr>
+<tr class="even">
+<td align="left">Quasi-Poisson</td>
+<td align="left">Sí (φ·μ)</td>
+<td align="left">No</td>
+<td align="left">Sí</td>
+<td align="left">Moderadamente</td>
+<td align="left">No</td>
+<td align="left">base R</td>
+</tr>
+<tr class="odd">
+<td align="left">Binomial negativa</td>
+<td align="left">Sí (μ + μ²/θ)</td>
+<td align="left">Sí</td>
+<td align="left">Sí</td>
+<td align="left">Sí</td>
+<td align="left">Sí</td>
+<td align="left">MASS</td>
+</tr>
+</tbody>
+</table>
+<p>La diferencia está en la <strong>varianza</strong>:</p>
+<ul>
+<li><strong>Poisson clásico:</strong></li>
+</ul>
+<p><span class="math display">\[
+\text{Var}(Y_i) = \mu_i
+\]</span></p>
+</div>
+<div id="recomendaciones" class="section level2">
+<h2><strong>Recomendaciones</strong></h2>
+<ul>
+<li><p>Usa Quasi-Poisson si solo quieres corregir los errores estándar
+sin alterar los coeficientes.</p></li>
+<li><p>Usa Binomial negativa si la sobredispersión es significativa y
+quieres una mejor estimación del modelo y su ajuste.</p></li>
+</ul>
+</div>
+<div id="regresión-quasi-poisson" class="section level2">
+<h2><strong>Regresión Quasi Poisson</strong></h2>
+<p>Cuando te interesa ajustar varianza sin cambiar los coeficiente</p>
+<p>Permite que la varianza sea mayor que la media</p>
+<p>No cambia los coeficientes, pero ajusta los errores estándar para que
+los tests sean válidos</p>
+<p><span class="math display">\[
+\text{Var}(Y_i) = \phi \cdot \mu_i
+\]</span></p>
+<p>donde <span class="math inline">\(\phi\)</span> es el parámetro de
+dispersión estimado para corregir la varianza.</p>
+<pre class="r"><code>modelo_qp &lt;- glm(EventosdeProtestas ~ Salud + Educacion+Institucional, data = data, family = quasipoisson())
+summary(modelo_qp)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = EventosdeProtestas ~ Salud + Educacion + Institucional, 
+##     family = quasipoisson(), data = data)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -8.925  -4.514  -1.848   1.437  17.176  
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)    3.10353    1.25892   2.465   0.0224 *
+## Salud          0.32171    0.31353   1.026   0.3165  
+## Educacion      0.06426    0.26501   0.242   0.8108  
+## Institucional -0.32775    0.29122  -1.125   0.2731  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for quasipoisson family taken to be 48.11518)
+## 
+##     Null deviance: 1236.84  on 24  degrees of freedom
+## Residual deviance:  883.47  on 21  degrees of freedom
+## AIC: NA
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+<div id="regresión-binomial-negativa" class="section level2">
+<h2><strong>Regresión Binomial Negativa</strong></h2>
+<p>Este modelo introduce un parámetro adicional para manejar la
+sobredispersión.</p>
+<p>Te permite mantener la lógica de conteo, pero ajusta mejor la
+varianza.</p>
+<p>Ajusta directamente la varianza:</p>
+<p>En este modelo, la varianza depende <strong>cuadráticamente</strong>
+de la media:</p>
+<p><span class="math display">\[
+\log(\mu_i) = \beta_0 + \beta_1 X_{1i} + \dots + \beta_k X_{ki}
+\]</span></p>
+<p><span class="math display">\[
+\text{Var}(Y_i) = \mu_i + \frac{\mu_i^2}{\theta}
+\]</span></p>
+<p>donde <span class="math inline">\(\theta\)</span> es el parámetro que
+controla la sobredispersión:<br />
+- Si <span class="math inline">\(\theta \to \infty\)</span>, se aproxima
+al modelo de Poisson. - Si <span class="math inline">\(\theta\)</span>
+es pequeño, hay mucha sobredispersión.</p>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code># Este paso no es necesario, sirve para quedarnos solo con los departamentos con número de eventos de protestas menor a 100 en el aña 2022
+data=filter(data,EventosdeProtestas&lt;100)</code></pre>
+<pre class="r"><code>library(MASS)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;MASS&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     select</code></pre>
+<pre class="r"><code>modelo_nb &lt;- glm.nb(EventosdeProtestas ~ Salud + Educacion+Institucional, data = data)
+summary(modelo_nb)</code></pre>
+<pre><code>## 
+## Call:
+## glm.nb(formula = EventosdeProtestas ~ Salud + Educacion + Institucional, 
+##     data = data, init.theta = 2.31356648, link = log)
+## 
+## Deviance Residuals: 
+##      Min        1Q    Median        3Q       Max  
+## -2.37428  -0.72428  -0.03183   0.52463   1.46773  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)    4.65492    0.81070   5.742 9.36e-09 ***
+## Salud          0.01734    0.16280   0.107  0.91518    
+## Educacion      0.08530    0.14938   0.571  0.56800    
+## Institucional -0.40435    0.15446  -2.618  0.00885 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for Negative Binomial(2.3136) family taken to be 1)
+## 
+##     Null deviance: 32.289  on 22  degrees of freedom
+## Residual deviance: 24.154  on 19  degrees of freedom
+## AIC: 196.16
+## 
+## Number of Fisher Scoring iterations: 1
+## 
+## 
+##               Theta:  2.314 
+##           Std. Err.:  0.718 
+## 
+##  2 x log-likelihood:  -186.155</code></pre>
+<p>El modelo con menor AIC es preferible.</p>
+<p>Si el modelo binomial negativa mejora el ajuste, confirma que la
+sobredispersión era relevante.</p>
+<pre class="r"><code>AIC(modelo_poisson, modelo_qp,modelo_nb)</code></pre>
+<pre><code>## Warning in AIC.default(modelo_poisson, modelo_qp, modelo_nb): models are not
+## all fitted to the same number of observations</code></pre>
+<pre><code>##                df       AIC
+## modelo_poisson  4 1014.9897
+## modelo_qp       4        NA
+## modelo_nb       5  196.1553</code></pre>
+<p>Deben estar más centrados y sin patrón evidente.</p>
+<pre class="r"><code>plot(residuals(modelo_nb, type = &quot;pearson&quot;))</code></pre>
+<p><img src="sesion2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="ejercicio-para-casa" class="section level2">
+<h2><strong>Ejercicio para casa</strong></h2>
+<p>La base <strong>quine</strong> contiene información sobre ausentismo
+escolar de estudiantes en Australia, recolectada en un estudio sobre
+educación.</p>
+<p>Objetivo: Analizar qué factores están asociados al número de días de
+ausencia de los estudiantes durante un año escolar.</p>
+<pre class="r"><code>library(MASS)
+head(quine)</code></pre>
+<pre><code>##   Eth Sex Age Lrn Days
+## 1   A   M  F0  SL    2
+## 2   A   M  F0  SL   11
+## 3   A   M  F0  SL   14
+## 4   A   M  F0  AL    5
+## 5   A   M  F0  AL    5
+## 6   A   M  F0  AL   13</code></pre>
+<pre class="r"><code>mean(quine$Days)</code></pre>
+<pre><code>## [1] 16.4589</code></pre>
+<pre class="r"><code>var(quine$Days)</code></pre>
+<pre><code>## [1] 264.1673</code></pre>
 </style>
-<p><a href=""> <button>Descargar la base de datos</button> </a></p>
 <p><br></br> <a href="#beginning">Go to page beginning</a></p>
 </div>
 </div>
