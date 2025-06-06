@@ -11,12 +11,12 @@
 
 
 
-<title>Estadística para el Análisis Político 2</title>
+<title>Organización de datos</title>
 
 <script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -271,9 +271,6 @@ $(document).ready(function () {
     <li>
       <a href="sesion3.html">Regresión Logistica Binaria</a>
     </li>
-    <li>
-      <a href="sesion6.html">Eventos históricos</a>
-    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -299,7 +296,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="sesion7.html">Organización de datos</a>
+      <a href="sesion6.html">Organización de datos</a>
     </li>
   </ul>
 </li>
@@ -315,27 +312,148 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Estadística para el Análisis Político
-2</h1>
+<h1 class="title toc-ignore">Organización de datos</h1>
 
 </div>
 
 
-<p>¡Hola a <a href="mailto:tod@s" class="email">tod@s</a>!,</p>
-<p>Antes de empezar, quiero darles la bievenida al curso “Estadística
-para el Análisis Político 2”. Mi objetivo es que vean la estadística
-como una herramienta poderosa para entender la complejidad del mundo,
-analizar datos y tomar mejores decisiones.</p>
-<p>La estadística está en todas partes y, si le dan una oportunidad, les
-puede abrir muchas puertas en su vida académica y profesional.Lo más
-importante es que vengan con curiosidad y mente abierta.</p>
-<div id="equipo-de-soporte" class="section level1">
-<h1>Equipo de soporte</h1>
-<ul>
-<li><p>Marylia Cruz (Docente)</p></li>
-<li><p>Liz Crispin (Jefe de Práctica)</p></li>
-<li><p>Chiara Zamora (Jefe de Práctica)</p></li>
-</ul>
+<center>
+<img src=" " width="200"/>
+</center>
+<p><strong>FACULTAD DE CIENCIAS SOCIALES - PUCP</strong><br></p>
+<div
+id="curso-pol-304---estadística-para-el-análisis-político-2-semestre-2025---1"
+class="section level2">
+<h2>Curso: POL 304 - Estadística para el análisis político 2 | Semestre
+2025 - 1 <br></h2>
+</div>
+<div id="docente-marylia-cruz" class="section level2">
+<h2>Docente: Marylia Cruz <br></h2>
+<hr />
+</div>
+<div id="apertura-de-la-base-de-datos" class="section level2">
+<h2><strong>Apertura de la base de datos</strong></h2>
+<p>Esta base de datos corresponde a la Aprobación Presidencial de los
+presidentes peruanos desde agosto de 1985.</p>
+<p>Aragón, Jorge, Marylia Cruz, Karina Alcántara, y Paolo Sánchez.
+Dashboard de Aprobación Presidencial (1985 - 2023). Versión 10 de
+diciembre 2024. Observatorio de Democracia y Gobernabilidad. Pontificia
+Universidad Católica del Perú-PUCP. <a
+href="https://democracia-gobernabilidad.pucp.edu.pe/poderes-del-estado/ejecutivo/presidencia"
+class="uri">https://democracia-gobernabilidad.pucp.edu.pe/poderes-del-estado/ejecutivo/presidencia</a></p>
+<p><br></br></p>
+</style>
+<p><a href="https://paideia.pucp.edu.pe/cursos/mod/resource/view.php?id=2373025">
+<button>Descargar la base de datos</button> </a></p>
+<pre class="r"><code>library(rio)
+aprobacion=import(&quot;Aprobación presidencial.xlsx&quot;)</code></pre>
+<pre class="r"><code>names(aprobacion)</code></pre>
+<pre><code>## [1] &quot;Año&quot;                      &quot;Mes&quot;                     
+## [3] &quot;Gobierno&quot;                 &quot;Aprobacion_presidente&quot;   
+## [5] &quot;Desaprobacion_presidente&quot; &quot;No sabe_presidente&quot;</code></pre>
+</div>
+<div id="funciones-del-paquete-dplyr" class="section level2">
+<h2><strong>Funciones del paquete dplyr</strong></h2>
+<p>El paquete dplyr es una de las herramientas más poderosas y populares
+del ecosistema tidyverse en R. Está diseñado para hacer que la
+manipulación de datos sea más eficiente, legible y coherente,
+especialmente cuando se trabaja con grandes bases de datos o con
+data.frame y tibble.</p>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+</div>
+<div id="filter" class="section level2">
+<h2><strong>filter()</strong></h2>
+<p>Filtra solo la aprobación del gobierno de Boluarte</p>
+<p>Ahora guardar la base filtrada en este nuevo objeto
+“aprobacion_Boluarte”.</p>
+<pre class="r"><code>aprobacion_Boluarte=aprobacion %&gt;% filter(Gobierno == &quot;Boluarte&quot;)</code></pre>
+<p>Usa <em>head</em> para ver las primeras filas de la base de datos</p>
+<pre class="r"><code>head(aprobacion_Boluarte)</code></pre>
+<pre><code>##    Año       Mes Gobierno Aprobacion_presidente Desaprobacion_presidente
+## 1 2022 Diciembre Boluarte                  0.21                     0.68
+## 2 2023     Enero Boluarte                  0.20                     0.71
+## 3 2023   Febrero Boluarte                  0.18                     0.74
+## 4 2023     Marzo Boluarte                  0.17                     0.76
+## 5 2023     Abril Boluarte                  0.15                     0.77
+## 6 2023      Mayo Boluarte                  0.16                     0.75
+##   No sabe_presidente
+## 1               0.11
+## 2               0.09
+## 3               0.08
+## 4               0.07
+## 5               0.08
+## 6               0.09</code></pre>
+</div>
+<div id="select" class="section level2">
+<h2><strong>select()</strong></h2>
+<p>Seleccionar columnas especificadas.</p>
+<pre class="r"><code>aprobacion_1=aprobacion %&gt;% select(Año, Mes,Gobierno,Aprobacion_presidente)
+
+names(aprobacion_1)</code></pre>
+<pre><code>## [1] &quot;Año&quot;                   &quot;Mes&quot;                   &quot;Gobierno&quot;             
+## [4] &quot;Aprobacion_presidente&quot;</code></pre>
+</div>
+<div id="mutate" class="section level2">
+<h2><strong>mutate()</strong></h2>
+<p>Crear o transformas columnas</p>
+<pre class="r"><code>aprobacion_1=aprobacion_1  %&gt;% mutate(deaprobacion=100-Aprobacion_presidente)
+
+names(aprobacion_1)</code></pre>
+<pre><code>## [1] &quot;Año&quot;                   &quot;Mes&quot;                   &quot;Gobierno&quot;             
+## [4] &quot;Aprobacion_presidente&quot; &quot;deaprobacion&quot;</code></pre>
+</div>
+<div id="group_by-summarise" class="section level2">
+<h2><strong>group_by() + summarise()</strong></h2>
+<p>Agrupa por presidente y calcula el promedio de aprobación de cada
+uno.</p>
+<pre class="r"><code>aprobacion_resumen=aprobacion_1 %&gt;%
+  group_by(Gobierno) %&gt;%
+  summarise(promedio_aprobacion=mean(Aprobacion_presidente),.groups = &quot;drop&quot;)
+aprobacion_resumen</code></pre>
+<pre><code>## # A tibble: 12 × 2
+##    Gobierno  promedio_aprobacion
+##    &lt;chr&gt;                   &lt;dbl&gt;
+##  1 Boluarte                0.113
+##  2 Castillo                0.289
+##  3 Fujimori                0.546
+##  4 García I                0.442
+##  5 García II               0.337
+##  6 Humala                  0.332
+##  7 Kuczynski               0.368
+##  8 Merino                  0.05 
+##  9 Paniagua                0.682
+## 10 Sagasti                 0.386
+## 11 Toledo                  0.190
+## 12 Vizcarra                0.576</code></pre>
+</div>
+<div id="left_join" class="section level2">
+<h2><strong>left_join()</strong></h2>
+<p>Unir dos tablas</p>
+<pre class="r"><code>#SUPONGAMOS QUE TENEMOS OTRA TABLA CON DATOS DE LOS PRESIDENTES
+
+dias_de_gobierno=data.frame(
+  Gobierno=c(&quot;Boluarte&quot;,&quot;Castillo&quot;,&quot;Sagasti&quot;,&quot;Vizcarra&quot;,&quot;Kuczynski&quot;),
+  Dia=c(756,498,254,962,603)
+)
+
+
+resultado=left_join(dias_de_gobierno,aprobacion_resumen, by=&quot;Gobierno&quot;)
+resultado</code></pre>
+<pre><code>##    Gobierno Dia promedio_aprobacion
+## 1  Boluarte 756           0.1133333
+## 2  Castillo 498           0.2887500
+## 3   Sagasti 254           0.3862500
+## 4  Vizcarra 962           0.5758065
+## 5 Kuczynski 603           0.3685000</code></pre>
+<p><br></br> <a href="#beginning">Go to page beginning</a></p>
 </div>
 
 

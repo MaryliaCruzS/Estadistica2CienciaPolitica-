@@ -17,6 +17,8 @@ navbar:
         href: sesion2.html
       - text: "Regresión Logistica Binaria"
         href: sesion3.html
+      - text: "Eventos históricos"
+        href: sesion6.html
         
     - text: "Unidad 3"
       menu:
@@ -28,7 +30,7 @@ navbar:
     - text: "Extras"
       menu:
       - text: "Organización de datos"
-        href: sesion6.html
+        href: sesion7.html
 
 
 output:

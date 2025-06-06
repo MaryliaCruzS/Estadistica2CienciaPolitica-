@@ -1,0 +1,115 @@
+---
+title: "Organización de datos"
+output: html_document
+---
+
+<center><img src=" " width="200"/></center>
+
+**FACULTAD DE CIENCIAS SOCIALES - PUCP**<br>
+
+## Curso: POL 304 - Estadística para el análisis político 2 \| Semestre 2025 - 1 <br>
+
+## Docente: Marylia Cruz <br>
+
+------------------------------------------------------------------------
+
+## **Apertura de la base de datos**
+
+Esta base de datos corresponde a la Aprobación Presidencial de los presidentes peruanos desde agosto de 1985.
+
+
+Aragón, Jorge, Marylia Cruz, Karina Alcántara, y Paolo Sánchez. Dashboard de Aprobación Presidencial (1985 - 2023). Versión 10 de diciembre 2024. Observatorio de Democracia y Gobernabilidad. Pontificia Universidad Católica del Perú-PUCP. https://democracia-gobernabilidad.pucp.edu.pe/poderes-del-estado/ejecutivo/presidencia
+
+
+<br></br>
+
+</style>
+
+<a href="https://paideia.pucp.edu.pe/cursos/mod/resource/view.php?id=2373025">
+  <button>Descargar la base de datos</button>
+</a>
+
+
+```{r}
+library(rio)
+aprobacion=import("Aprobación presidencial.xlsx")
+```
+
+
+```{r}
+names(aprobacion)
+```
+
+## **Funciones del paquete dplyr**
+
+El paquete dplyr es una de las herramientas más poderosas y populares del ecosistema tidyverse en R. Está diseñado para hacer que la manipulación de datos sea más eficiente, legible y coherente, especialmente cuando se trabaja con grandes bases de datos o con data.frame y tibble.
+```{r}
+library(dplyr)
+```
+
+## **filter()**
+
+Filtra solo la aprobación del gobierno de Boluarte
+
+Ahora guardar la base filtrada en este nuevo objeto "aprobacion_Boluarte".
+
+```{r}
+aprobacion_Boluarte=aprobacion %>% filter(Gobierno == "Boluarte")
+```
+
+Usa *head* para ver las primeras filas de la base de datos
+```{r}
+head(aprobacion_Boluarte)
+```
+
+## **select()**
+
+Seleccionar columnas especificadas.
+
+```{r}
+aprobacion_1=aprobacion %>% select(Año, Mes,Gobierno,Aprobacion_presidente)
+
+names(aprobacion_1)
+```
+
+## **mutate()**
+
+Crear o transformas columnas
+
+```{r}
+aprobacion_1=aprobacion_1  %>% mutate(deaprobacion=100-Aprobacion_presidente)
+
+names(aprobacion_1)
+```
+
+## **group_by() + summarise()**
+
+Agrupa por presidente y calcula el promedio de aprobación de cada uno.
+
+```{r}
+aprobacion_resumen=aprobacion_1 %>%
+  group_by(Gobierno) %>%
+  summarise(promedio_aprobacion=mean(Aprobacion_presidente),.groups = "drop")
+aprobacion_resumen
+```
+
+## **left_join()**
+
+Unir dos tablas
+
+```{r}
+#SUPONGAMOS QUE TENEMOS OTRA TABLA CON DATOS DE LOS PRESIDENTES
+
+dias_de_gobierno=data.frame(
+  Gobierno=c("Boluarte","Castillo","Sagasti","Vizcarra","Kuczynski"),
+  Dia=c(756,498,254,962,603)
+)
+
+
+resultado=left_join(dias_de_gobierno,aprobacion_resumen, by="Gobierno")
+resultado
+```
+
+
+<br></br> [Go to page beginning](#beginning)
+
