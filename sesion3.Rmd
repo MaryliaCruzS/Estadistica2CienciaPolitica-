@@ -387,7 +387,7 @@ plot_model(modelo1, type = "est", transform = "exp")  #
 
 </style>
 
-<a href="">
+<a href="https://paideia.pucp.edu.pe/cursos/mod/resource/view.php?id=2381681">
   <button>Descargar la base de datos</button>
 </a>
 
