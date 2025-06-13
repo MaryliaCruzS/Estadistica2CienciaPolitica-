@@ -271,6 +271,9 @@ $(document).ready(function () {
     <li>
       <a href="sesion3.html">Regresión Logistica Binaria</a>
     </li>
+    <li>
+      <a href="sesion6.html">Eventos históricos</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -296,7 +299,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="sesion6.html">Organización de datos</a>
+      <a href="sesion7.html">Organización de datos</a>
     </li>
   </ul>
 </li>
@@ -332,10 +335,440 @@ class="section level2">
 <div id="docente-marylia-cruz" class="section level2">
 <h2>Docente: Marylia Cruz <br></h2>
 <hr />
+<p><br></p>
 </div>
-<div id="introducción-a-r" class="section level2">
-<h2><strong>Introducción a R</strong></h2>
-<p><br></br></p>
+<div id="para-qué-sirve-la-regresión-logística-binaria"
+class="section level2">
+<h2><strong>🎯 ¿Para qué sirve la Regresión Logística
+Binaria?</strong></h2>
+<p><br></p>
+<p>La regresión logística binaria se utiliza cuando la <strong>variable
+dependiente es dicotómica</strong>, es decir, solo toma dos valores
+posibles (por ejemplo: 1 = sí, 0 = no).</p>
+<p>Este modelo permite estimar la <strong>probabilidad de que ocurra un
+evento</strong>, como ser voluntario, votar, enfermarse, etc., en
+función de variables predictoras (edad, género, ingreso, etc.).</p>
+<p><br></p>
+</div>
+<div
+id="ejemplos-comunes-de-uso-en-ciencia-política-y-relaciones-internacionales"
+class="section level2">
+<h2>📌 Ejemplos comunes de uso en Ciencia Política y Relaciones
+Internacionales</h2>
+<table>
+<caption>Aplicaciones de regresión logística binaria en Ciencias
+Políticas</caption>
+<colgroup>
+<col width="26%" />
+<col width="29%" />
+<col width="44%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Tema</th>
+<th align="left">Variable.dependiente</th>
+<th align="left">Ejemplo.de.uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Participación electoral</td>
+<td align="left">Votó / No votó</td>
+<td align="left">Explicar participación según nivel educativo</td>
+</tr>
+<tr class="even">
+<td align="left">Apoyo a la democracia</td>
+<td align="left">Apoya / No apoya</td>
+<td align="left">Evaluar efecto de confianza institucional</td>
+</tr>
+<tr class="odd">
+<td align="left">Nacionalismo</td>
+<td align="left">Tiene actitudes nacionalistas / No</td>
+<td align="left">Examinar influencia de educación o edad</td>
+</tr>
+<tr class="even">
+<td align="left">Protesta política</td>
+<td align="left">Participó en protesta / No</td>
+<td align="left">Relacionar con desafección política o redes
+sociales</td>
+</tr>
+<tr class="odd">
+<td align="left">Opinión sobre política exterior</td>
+<td align="left">Apoya acuerdo internacional / No</td>
+<td align="left">Analizar efecto de orientación ideológica o región</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+<div id="qué-representa-el-valor-1-en-una-regresión-logística"
+class="section level2">
+<h2><strong>✅ ¿Qué representa el valor </strong>1** en una regresión
+logística?**</h2>
+<p>En una regresión logística binaria, la variable dependiente solo
+puede tomar dos valores: <strong>0 y 1</strong>.</p>
+<ul>
+<li>El valor <strong>1</strong> representa el <strong>evento que
+queremos predecir</strong> o explicar.</li>
+<li>El valor <strong>0</strong> representa la ausencia de ese
+evento.</li>
+</ul>
+<p>El modelo se enfoca en estimar la siguiente probabilidad:</p>
+<p><span class="math display">\[
+\text{Prob}(Y = 1 \mid X) = p
+\]</span></p>
+<p>Es decir, el modelo calcula la <strong>probabilidad de que ocurra el
+evento codificado como 1</strong>, dado un conjunto de variables
+explicativas.</p>
+<p><br></p>
+<div id="ejemplos" class="section level3">
+<h3>📌 Ejemplos</h3>
+<table>
+<thead>
+<tr class="header">
+<th>Variable dependiente</th>
+<th>Significado del valor 1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>voto</code></td>
+<td>La persona <strong>sí votó</strong></td>
+</tr>
+<tr class="even">
+<td><code>voluntario</code></td>
+<td>La persona <strong>es voluntaria</strong></td>
+</tr>
+<tr class="odd">
+<td><code>diabetes</code></td>
+<td>La persona <strong>tiene diabetes</strong></td>
+</tr>
+<tr class="even">
+<td><code>ganador</code></td>
+<td>El candidato <strong>ganó la elección</strong></td>
+</tr>
+<tr class="odd">
+<td><code>protesto</code></td>
+<td>El ciudadano <strong>participó en protesta</strong></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+<div id="nota-técnica" class="section level3">
+<h3>🛠️ Nota técnica</h3>
+<p>Antes de ajustar el modelo, asegúrate de que el evento de interés
+esté codificado como <code>1</code>. Por ejemplo:</p>
+<pre class="r"><code># Recodificar variable binaria: 1 = sí votó, 0 = no votó
+# datos$voto_bin &lt;- ifelse(datos$voto == &quot;sí&quot;, 1, 0)</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="cómo-funciona" class="section level2">
+<h2><strong>⚙️ ¿Cómo funciona?</strong></h2>
+<p>La regresión logística modela la <strong>probabilidad</strong> de que
+ocurra un evento usando la función logística (sigmoide). El modelo
+estima el logaritmo de los <strong>odds</strong> como una función
+lineal:</p>
+<p><span class="math display">\[
+\log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 X_{1i} +
+\beta_2 X_{2i} + \dots + \beta_k X_{ki}
+\]</span></p>
+<p>donde <span class="math inline">\(p_i\)</span> es la probabilidad de
+que el evento ocurra para el individuo <span
+class="math inline">\(i\)</span>.</p>
+<p>Luego se transforma a escala de probabilidad con:</p>
+<p><span class="math display">\[
+p_i = \frac{e^{\beta_0 + \beta_1 X_{1i} + \dots + \beta_k X_{ki}}}{1 +
+e^{\beta_0 + \beta_1 X_{1i} + \dots + \beta_k X_{ki}}}
+\]</span></p>
+<p><br></p>
+</div>
+<div id="cuándo-usarla" class="section level2">
+<h2><strong>🧪 ¿Cuándo usarla?</strong></h2>
+<p><br></p>
+<p>Usa regresión logística binaria cuando:</p>
+<ul>
+<li>La variable dependiente es <strong>binaria</strong> (0/1)</li>
+<li>Quieres estimar <strong>probabilidades</strong></li>
+<li>Los predictores pueden ser <strong>categóricos o
+numéricos</strong></li>
+<li>No se cumplen los supuestos de normalidad o homocedasticidad de la
+regresión lineal</li>
+</ul>
+<p>Si hay más de dos categorías en la variable dependiente, deberías
+usar <strong>regresión logística multinomial</strong>
+(<code>multinom()</code>).</p>
+<p><br></p>
+</div>
+<div id="cómo-se-realiza-la-regresión-logística-binaria-en-r"
+class="section level2">
+<h2><strong>🫶¿Cómo se realiza la regresión logística binaria en
+R?</strong></h2>
+<p><br></p>
+<p><strong>Apertura de datos </strong></p>
+<pre class="r"><code>library(rio)
+library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>datos=import(&quot;Base_de_datos_acoso_2019.sav&quot;)
+datos=datos %&gt;% select(indiceAC_dico, NSEGRUP,SEXO,GEDAD,EDAD,NIVEDU)
+
+names(datos)</code></pre>
+<pre><code>## [1] &quot;indiceAC_dico&quot; &quot;NSEGRUP&quot;       &quot;SEXO&quot;          &quot;GEDAD&quot;        
+## [5] &quot;EDAD&quot;          &quot;NIVEDU&quot;</code></pre>
+<pre class="r"><code>datos &lt;- datos %&gt;%
+  filter(!is.na(indiceAC_dico))</code></pre>
+<p><strong>Formateo de variables </strong></p>
+<pre class="r"><code>datos$SEXO=as.factor(datos$SEXO)
+datos$SEXO=factor(datos$SEXO,levels = levels(datos$SEXO),labels = c(&quot;Hombre&quot;,&quot;Mujer&quot;))</code></pre>
+<p><strong>Definición del modelo </strong></p>
+<pre class="r"><code>modelo1 &lt;- glm(indiceAC_dico ~ SEXO +EDAD , data = datos, family = binomial())
+summary(modelo1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = indiceAC_dico ~ SEXO + EDAD, family = binomial(), 
+##     data = datos)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9273  -0.9115  -0.3939   0.8500   2.6102  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  0.667213   0.253400   2.633  0.00846 ** 
+## SEXOMujer    1.970999   0.188289  10.468  &lt; 2e-16 ***
+## EDAD        -0.047530   0.006107  -7.783 7.06e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 934.67  on 678  degrees of freedom
+## Residual deviance: 747.14  on 676  degrees of freedom
+## AIC: 753.14
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p></br></p>
+<p><strong>Interpretación</strong></p>
+<p>🔹 (Intercept) = 0.6672 El intercepto representa el log-odds
+(logaritmo del cociente de probabilidades) del evento cuando:</p>
+<ul>
+<li><p>Sexo = referencia (hombre)</p></li>
+<li><p>Edad = 0 (lo cual no es realista, pero es el punto base del
+modelo) No se interpreta directamente a menos que tenga sentido
+contextualizar la edad en 0.</p></li>
+</ul>
+<p>🔹 SEXOMujer = 1.971 Este coeficiente indica que, manteniendo
+constante la edad:</p>
+<p>Ser mujer aumenta los log-odds del evento en 1.971 unidades respecto
+a los hombres. Para interpretar en términos más intuitivos (odds
+ratio):</p>
+<pre class="r"><code>exp(1.971) </code></pre>
+<pre><code>## [1] 7.177851</code></pre>
+<ul>
+<li>Es decir, las mujeres tienen 7.18 veces más probabilidades (odds) de
+que ocurra el evento (por ejemplo, ser voluntaria, apoyar algo, etc.) en
+comparación con los hombres, controlando por edad.</li>
+</ul>
+<p>Para convertir el coeficiente de una regresión logística binaria en
+un porcentaje interpretable</p>
+<pre class="r"><code>coef_mujer &lt;- coef(modelo1)[&quot;SEXOMujer&quot;]
+100 * (exp(coef_mujer) - 1)</code></pre>
+<pre><code>## SEXOMujer 
+##  617.7846</code></pre>
+<ul>
+<li>Ser mujer incrementa los odds del evento en un 618% en comparación
+con los hombres, manteniendo constantes las demás variables.</li>
+</ul>
+<p>🔹 EDAD = -0.0475</p>
+<p>Este coeficiente es negativo, lo cual indica que:</p>
+<p>Por cada año adicional de edad, los log-odds del evento disminuyen en
+0.0475 unidades, manteniendo constante el sexo. Transformando a odds
+ratio:</p>
+<pre class="r"><code>exp(-0.0475) </code></pre>
+<pre><code>## [1] 0.9536105</code></pre>
+<ul>
+<li>Por cada año de edad, las probabilidades del evento disminuyen en
+aproximadamente un 4.64%.</li>
+</ul>
+<pre class="r"><code>100 * (exp(coef(modelo1)[&quot;EDAD&quot;]) - 1)</code></pre>
+<pre><code>##      EDAD 
+## -4.641781</code></pre>
+<ul>
+<li>Por cada año adicional de edad, los odds del evento disminuyen en un
+4.64%.</li>
+</ul>
+<p></br></p>
+<p><strong>Interpretación en lenguaje sencillo</strong></p>
+<p>Ser mujer incrementa significativamente la probabilidad del evento,
+mientras que ser mayor de edad disminuye ligeramente esa probabilidad.
+Ambos efectos son estadísticamente significativos (p &lt; 0.001).</p>
+<p></br></p>
+</div>
+<div id="decidiendo-el-mejor-modelo" class="section level2">
+<h2><strong>Decidiendo el mejor modelo</strong></h2>
+<p></br></p>
+<p>Para elegir el modelo más adecuado, se pueden comparar múltiples
+especificaciones utilizando criterios como:</p>
+<ul>
+<li><strong>AIC</strong> (Akaike Information Criterion): menor AIC
+indica mejor ajuste penalizando la complejidad.</li>
+<li><strong>LogLik</strong> (Log-likelihood): mayor valor indica mejor
+ajuste.</li>
+<li><strong>Test de razón de verosimilitud</strong>
+(<code>anova(m1, m2, test = "Chisq")</code>): compara modelos
+anidados.</li>
+</ul>
+<pre class="r"><code># Comparar dos modelos logísticos
+modelo1 &lt;- glm(indiceAC_dico ~ SEXO +EDAD , data = datos, family = binomial())
+modelo2 &lt;- glm(indiceAC_dico ~ SEXO +EDAD +NSEGRUP, data = datos, family = binomial())
+
+AIC(modelo1, modelo2)</code></pre>
+<pre><code>##         df      AIC
+## modelo1  3 753.1407
+## modelo2  4 754.4192</code></pre>
+<pre class="r"><code>anova(modelo1, modelo2, test = &quot;Chisq&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: indiceAC_dico ~ SEXO + EDAD
+## Model 2: indiceAC_dico ~ SEXO + EDAD + NSEGRUP
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)
+## 1       676     747.14                     
+## 2       675     746.42  1   0.7215   0.3957</code></pre>
+<p></br></p>
+</div>
+<div id="evaluando-el-modelo-seleccionado" class="section level2">
+<h2><strong>✅ Evaluando el modelo seleccionado</strong></h2>
+<p></br></p>
+<p>Una vez elegido el modelo, evaluamos su desempeño con:</p>
+<ul>
+<li><strong>Pseudo-R² (McFadden) – mide calidad del ajuste</strong></li>
+</ul>
+<p>El ajuste se refiere a qué tan bien el modelo representa los datos
+observados. En regresión logística binaria, como no se usa R² clásico
+(de la regresión lineal), usamos:</p>
+<p>🔹 Pseudo-R² de McFadden Se basa en el logaritmo de la verosimilitud.
+Valores típicos: entre 0.2 y 0.4 se consideran un buen ajuste. Se
+interpreta comparativamente: un pseudo-R² más alto indica mejor
+ajuste.</p>
+<pre class="r"><code>library(pscl)</code></pre>
+<pre><code>## Classes and Methods for R originally developed in the
+## Political Science Computational Laboratory
+## Department of Political Science
+## Stanford University (2002-2015),
+## by and under the direction of Simon Jackman.
+## hurdle and zeroinfl functions by Achim Zeileis.</code></pre>
+<pre class="r"><code>pR2(modelo1)  # Pseudo-R2</code></pre>
+<pre><code>## fitting null model for pseudo-r2</code></pre>
+<pre><code>##          llh      llhNull           G2     McFadden         r2ML         r2CU 
+## -373.5703709 -467.3359539  187.5311660    0.2006385    0.2413292    0.3228268</code></pre>
+<ul>
+<li><strong>Curva ROC y AUC – mide capacidad de
+discriminación</strong></li>
+</ul>
+<p>Se refiere a la habilidad del modelo para distinguir entre los casos
+0 y 1, es decir, entre quienes sí y no presentan el evento.</p>
+<p>🔹 Herramienta principal: Curva ROC y AUC ROC: mide la sensibilidad
+vs especificidad en distintos umbrales. AUC (Área bajo la curva): valor
+entre 0 y 1. - 0.5: sin poder discriminativo (equivale a lanzar una
+moneda) - 1.0: discriminación perfecta - &gt; 0.7: aceptable; &gt; 0.8:
+buena; &gt; 0.9: excelente</p>
+<pre class="r"><code>library(pROC)</code></pre>
+<pre><code>## Type &#39;citation(&quot;pROC&quot;)&#39; for a citation.</code></pre>
+<pre><code>## 
+## Attaching package: &#39;pROC&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     cov, smooth, var</code></pre>
+<pre class="r"><code># 1. Obtener los valores predichos
+predicciones &lt;- predict(modelo1, type = &quot;response&quot;)
+predicciones1=fitted(modelo1)
+# 2. Crear curva ROC
+roc_obj &lt;- roc(response = datos$indiceAC_dico, predictor = predicciones)</code></pre>
+<pre><code>## Setting levels: control = 0, case = 1</code></pre>
+<pre><code>## Setting direction: controls &lt; cases</code></pre>
+<pre class="r"><code># 3. Mostrar AUC
+auc(roc_obj)</code></pre>
+<pre><code>## Area under the curve: 0.7924</code></pre>
+<pre class="r"><code># 4. Graficar curva ROC
+plot(roc_obj, col = &quot;blue&quot;, lwd = 2, main = &quot;Curva ROC - Modelo Logístico&quot;)
+abline(a = 0, b = 1, lty = 2, col = &quot;gray&quot;)  </code></pre>
+<p><img src="sesion3_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>El modelo tiene un 79% de probabilidad de asignar una probabilidad
+mayor al caso positivo que al negativo elegido al azar. Es decir, el
+modelo discrimina bien entre quienes presentan el evento (por ejemplo,
+sí votan) y quienes no.</p>
+<pre class="r"><code># 3. Extraer datos para ggplot
+roc_df &lt;- data.frame(
+  FPR = 1 - roc_obj$specificities,
+  TPR = roc_obj$sensitivities
+)
+
+
+library(ggplot2)
+# 4. Graficar con ggplot
+ggplot(roc_df, aes(x = FPR, y = TPR)) +
+  geom_line(color = &quot;blue&quot;, size = 1.2) +
+  geom_abline(slope = 1, intercept = 0, linetype = &quot;dashed&quot;, color = &quot;gray&quot;) +
+  labs(
+    title = &quot;Curva ROC - Modelo Logístico&quot;,
+    subtitle = paste(&quot;AUC =&quot;, round(auc(roc_obj), 3)),
+    x = &quot;Tasa de Falsos Positivos (1 - Especificidad)&quot;,
+    y = &quot;Tasa de Verdaderos Positivos (Sensibilidad)&quot;
+  ) +
+  theme_minimal()</code></pre>
+<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## ℹ Please use `linewidth` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.</code></pre>
+<p><img src="sesion3_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<ul>
+<li><strong>Matriz de confusión – precisión de predicción</strong></li>
+</ul>
+<p>Es la proporción de observaciones correctamente clasificadas por el
+modelo, según un umbral (por defecto 0.5):</p>
+<ul>
+<li>Predicción = 1 si p ≥0.5, si no = 0</li>
+<li>Luego se compara con los valores reales (0/1)</li>
+<li>Se construye una matriz de confusión:</li>
+</ul>
+<pre class="r"><code># Predicción binaria con umbral 0.5
+pred &lt;- ifelse(fitted(modelo1) &gt;= 0.5, 1, 0)
+table(Predicho = pred, Real = datos$indiceAC_dico)</code></pre>
+<pre><code>##         Real
+## Predicho   0   1
+##        0 306  90
+##        1  67 216</code></pre>
+<p>📈 ¿Qué son los efectos marginales?</p>
+<p>Los efectos marginales indican cuánto cambia la probabilidad estimada
+de que ocurra el evento cuando una variable predictora cambia en una
+unidad, manteniendo constantes las demás variables.</p>
+<p>Marginal promedio (AME) Cambio promedio en la probabilidad para todos
+los individuos</p>
+<pre class="r"><code>library(margins)
+summary(margins(modelo1))</code></pre>
+<pre><code>##     factor     AME     SE       z      p   lower   upper
+##       EDAD -0.0088 0.0010 -9.2436 0.0000 -0.0107 -0.0069
+##  SEXOMujer  0.4034 0.0327 12.3224 0.0000  0.3392  0.4676</code></pre>
+</div>
+<div id="gráfico" class="section level2">
+<h2>Gráfico</h2>
+<pre class="r"><code>datos$indiceAC_dico=as.factor(datos$indiceAC_dico)</code></pre>
+<pre class="r"><code>modelo1 &lt;- glm(indiceAC_dico ~ SEXO +EDAD , data = datos, family = binomial())
+modelo2 &lt;- glm(indiceAC_dico ~ SEXO +EDAD +NSEGRUP, data = datos, family = binomial())
+modelo3 &lt;- glm(indiceAC_dico ~  EDAD , data = datos, family = binomial())</code></pre>
+<pre class="r"><code>library(sjPlot)</code></pre>
+<pre><code>## #refugeeswelcome</code></pre>
+<pre class="r"><code>plot_model(modelo1, type = &quot;est&quot;, transform = &quot;exp&quot;)  #</code></pre>
+<p><img src="sesion3_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 </style>
 <p><a href=""> <button>Descargar la base de datos</button> </a></p>
 <p><br></br> <a href="#beginning">Go to page beginning</a></p>
