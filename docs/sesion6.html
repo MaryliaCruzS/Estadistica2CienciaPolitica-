@@ -11,7 +11,7 @@
 
 
 
-<title>Eventos historicos</title>
+<title>Eventos historicos y Análisis de Supervivencia</title>
 
 <script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -315,7 +315,8 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Eventos historicos</h1>
+<h1 class="title toc-ignore">Eventos historicos y Análisis de
+Supervivencia</h1>
 
 </div>
 
@@ -333,13 +334,256 @@ class="section level2">
 <div id="docente-marylia-cruz" class="section level2">
 <h2>Docente: Marylia Cruz <br></h2>
 <hr />
+<p><br></p>
 </div>
-<div id="introducción-a-r" class="section level2">
-<h2><strong>Introducción a R</strong></h2>
-<p><br></br></p>
+<div
+id="para-qué-sirve-los-eventos-históricos-y-el-análisis-de-supervivencia"
+class="section level2">
+<h2><strong>🎯 ¿Para qué sirve los Eventos históricos y el Análisis de
+Supervivencia?</strong></h2>
+<p><br></p>
+<p>Para estudiar el tiempo que transcurre hasta que ocurre un evento
+específico (muerte, abandono, recaída, cambio de empleo, etc.) y
+analizar los factores que influyen en ese tiempo.</p>
+<p><br></p>
+<p><strong>Concepto clave:</strong></p>
+<ul>
+<li><p><strong>Evento histórico:</strong> suceso de interés cuya
+ocurrencia es registrada a lo largo del tiempo (ej.: muerte, recaída,
+abandono escolar, divorcio, cambio de empleo).</p></li>
+<li><p><strong>Variable clave:</strong> tiempo hasta el evento (tiempo
+de seguimiento o de permanencia).</p></li>
+<li><p>Importante: el evento puede no observarse para todos los casos ➤
+aparece la censura.</p></li>
+</ul>
+<p></br></p>
+<ul>
+<li><p><strong>Tipos de censura</strong></p></li>
+<li><ol style="list-style-type: decimal">
+<li>Censura a la derecha (la más común)</li>
+</ol></li>
+</ul>
+<p>Sabemos que el evento no ocurrió durante el tiempo de observación,
+pero no sabemos si o cuándo ocurrirá después.</p>
+<p>📌 Ejemplos:</p>
+<p>Un paciente sigue vivo al finalizar el estudio. Una persona no ha
+abandonado su trabajo al cierre de la encuesta. Un usuario no cancela su
+suscripción durante el periodo de seguimiento.</p>
+<p>🔁 Interpretación: sabemos que el tiempo al evento es mayor que el
+observado.</p>
+<ul>
+<li><ol start="2" style="list-style-type: decimal">
+<li>Censura a la izquierda</li>
+</ol></li>
+</ul>
+<p>El evento ya había ocurrido antes de que comenzara el seguimiento,
+pero no sabemos exactamente cuándo.</p>
+<p>📌 Ejemplos:</p>
+<p>Encuestamos a personas sobre edad al primer empleo, pero algunas ya
+estaban trabajando antes del periodo estudiado, sin recordar la edad
+exacta. En un estudio de enfermedades crónicas, algunos participantes ya
+tenían la enfermedad al ingresar al estudio, pero no se conoce el
+momento exacto del diagnóstico.</p>
+<p>🔁 Interpretación: sabemos que el tiempo al evento es menor que el
+registrado.</p>
+<ul>
+<li><ol start="3" style="list-style-type: decimal">
+<li>Censura intervalada</li>
+</ol></li>
+</ul>
+<p>No conocemos la fecha exacta del evento, pero sabemos que ocurrió
+dentro de un intervalo de tiempo.</p>
+<p>📌 Ejemplos:</p>
+<p>Un paciente realiza chequeos médicos anuales y en uno de ellos
+aparece la enfermedad, pero no sabemos cuándo exactamente surgió entre
+chequeos. Una mujer realiza un test de embarazo mensual. El test da
+negativo en enero y positivo en febrero: el evento (embarazo) ocurrió
+entre ambos meses.</p>
+<p>🔁 Interpretación: sabemos que el evento ocurrió entre dos tiempos
+conocidos.</p>
+</div>
+<div id="ejemplos" class="section level1">
+<h1><strong>Ejemplos </strong></h1>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="17%" />
+<col width="9%" />
+<col width="17%" />
+<col width="12%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Caso.de.Estudio</th>
+<th align="left">Evento.de.Interés</th>
+<th align="left">Unidad.de.Análisis</th>
+<th align="left">Variable.de.Tiempo</th>
+<th align="left">Censura</th>
+<th align="left">Covariables.Posibles</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Caída de regímenes democráticos</td>
+<td align="left">Quiebre del régimen democrático</td>
+<td align="left">País-año</td>
+<td align="left">Años desde transición democrática</td>
+<td align="left">Democracias aún vigentes</td>
+<td align="left">PBI per cápita, fragmentación, desigualdad</td>
+</tr>
+<tr class="even">
+<td align="left">Firma de tratados de paz en guerras civiles</td>
+<td align="left">Firma del tratado de paz</td>
+<td align="left">Conflicto armado</td>
+<td align="left">Años desde inicio del conflicto</td>
+<td align="left">Conflictos aún activos</td>
+<td align="left">Intervención externa, intensidad</td>
+</tr>
+<tr class="odd">
+<td align="left">Estabilidad de coaliciones</td>
+<td align="left">Disolución de la coalición</td>
+<td align="left">Coalición</td>
+<td align="left">Meses desde formación</td>
+<td align="left">Coaliciones aún vigentes</td>
+<td align="left">Ideología, liderazgo, crisis económica</td>
+</tr>
+<tr class="even">
+<td align="left">Transición democrática</td>
+<td align="left">Democratización formal del régimen</td>
+<td align="left">País</td>
+<td align="left">Años bajo régimen autoritario</td>
+<td align="left">Países aún autoritarios</td>
+<td align="left">Protestas, presión internacional</td>
+</tr>
+<tr class="odd">
+<td align="left">Permanencia en alianzas</td>
+<td align="left">Salida de la alianza</td>
+<td align="left">País-alianza</td>
+<td align="left">Años desde entrada a la alianza</td>
+<td align="left">Países aún miembros</td>
+<td align="left">Cambio de liderazgo, amenazas externas</td>
+</tr>
+</tbody>
+</table>
+<p></br></p>
+</div>
+<div id="análisis-kaplan-meier" class="section level1">
+<h1><strong>📈 ANÁLISIS KAPLAN-MEIER</strong></h1>
+<p></br></p>
+<div id="para-qué-sirve" class="section level2">
+<h2><strong>✅ ¿Para qué sirve?</strong></h2>
+<p>Estimar la probabilidad de “sobrevivir” más allá de cierto tiempo.
+Comparar grupos de personas (por ejemplo, hombres vs. mujeres) en
+términos de duración hasta el evento.</p>
+<p></br></p>
+</div>
+<div id="cómo-funciona" class="section level2">
+<h2><strong>⚙️ ¿Cómo funciona?</strong></h2>
+<p>Divide el tiempo en intervalos donde ocurren eventos. Calcula la
+probabilidad de sobrevivir en cada intervalo. Maneja correctamente casos
+censurados (personas que no llegaron al evento durante el
+seguimiento).</p>
+<p></br></p>
+</div>
+<div id="fórmula-del-estimador-de-kaplan-meier" class="section level2">
+<h2>Fórmula del Estimador de Kaplan-Meier</h2>
+<p>El estimador de Kaplan-Meier se define como:</p>
+<p><span class="math display">\[
+\hat{S}(t) = \prod_{t_i \leq t} \left( 1 - \frac{d_i}{n_i} \right)
+\]</span></p>
+<p>donde:</p>
+<ul>
+<li><span class="math inline">\(\hat{S}(t)\)</span> es la probabilidad
+estimada de sobrevivir más allá del tiempo <span
+class="math inline">\(t\)</span>,</li>
+<li><span class="math inline">\(t_i\)</span> son los tiempos en los que
+ocurre al menos un evento,</li>
+<li><span class="math inline">\(d_i\)</span> es el número de eventos
+(por ejemplo, muertes) ocurridos en el tiempo <span
+class="math inline">\(t_i\)</span>,</li>
+<li><span class="math inline">\(n_i\)</span> es el número de individuos
+en riesgo justo antes de <span class="math inline">\(t_i\)</span>.</li>
+</ul>
+<p></br></p>
+</div>
+<div id="cuándo-usarla" class="section level2">
+<h2><strong>📅 ¿Cuándo usarla?</strong></h2>
+<p>Cuando queremos describir la duración hasta un evento. Comparar
+curvas de supervivencia entre grupos sin ajustar por otras
+variables.</p>
+</div>
+</div>
+<div id="cómo-se-realiza" class="section level1">
+<h1><strong>🛠 ¿Cómo se realiza?</strong></h1>
+Usar datos que incluyan: Tiempo de seguimiento. Evento (1 = ocurrió, 0 =
+censurado). Grupo (si hay comparación).
 </style>
+</div>
+<div id="modelo-de-regresión-de-cox" class="section level1">
+<h1><strong>MODELO DE REGRESIÓN DE COX</strong></h1>
+<div id="para-qué-sirve-1" class="section level2">
+<h2><strong>✅ ¿Para qué sirve?</strong></h2>
+<p>Evaluar el efecto de varias variables sobre el tiempo al evento.
+Calcular riesgos relativos (hazard ratios) ajustados. No requiere asumir
+una forma específica de la función de supervivencia.</p>
+</div>
+<div id="cómo-funciona-1" class="section level2">
+<h2><strong>⚙️ ¿Cómo funciona?</strong></h2>
+<p>Estima cómo las variables (edad, sexo, tratamiento…) afectan la razón
+de riesgo. Utiliza una función de riesgo basal no especificada y
+coeficientes exponenciales. Supone que las razones de riesgo son
+constantes en el tiempo (proporcionalidad de riesgos).</p>
+</div>
+<div id="cuándo-usarla-1" class="section level2">
+<h2><strong>📅 ¿Cuándo usarla?</strong></h2>
+<p>Cuando se quiere hacer un análisis multivariado del tiempo hasta el
+evento. Ideal si hay variables continuas y categóricas. Cuando se
+necesita ajustar por confusores.</p>
+</div>
+<div id="cómo-se-realiza-1" class="section level2">
+<h2><strong>🛠 ¿Cómo se realiza?</strong></h2>
+<p>Base con: Tiempo. Evento (1/0). Covariables (edad, sexo, etc.).</p>
+</div>
+<div id="modelo-de-regresión-de-cox-1" class="section level2">
+<h2>Modelo de Regresión de Cox</h2>
+<p>El modelo de Cox, o modelo de riesgos proporcionales, se expresa
+como:</p>
+<p><span class="math display">\[
+h(t | X) = h_0(t) \cdot \exp(\beta_1 X_1 + \beta_2 X_2 + \cdots +
+\beta_p X_p)
+\]</span></p>
+<p>donde:</p>
+<ul>
+<li><span class="math inline">\(h(t | X)\)</span> es la función de
+riesgo en el tiempo <span class="math inline">\(t\)</span> dado el
+vector de covariables <span class="math inline">\(X\)</span>,</li>
+<li><span class="math inline">\(h_0(t)\)</span> es la <strong>función de
+riesgo basal</strong> (baseline hazard), no especificada
+paramétricamente,</li>
+<li><span class="math inline">\(\beta_1, \beta_2, \dots,
+\beta_p\)</span> son los coeficientes estimados para las covariables
+<span class="math inline">\(X_1, X_2, \dots, X_p\)</span>,</li>
+<li><span class="math inline">\(\exp(\beta_j)\)</span> se interpreta
+como el <strong>hazard ratio</strong> asociado a la covariable <span
+class="math inline">\(X_j\)</span>.</li>
+</ul>
+<p>Este modelo permite estimar el efecto de las covariables sobre la
+razón de riesgo sin hacer suposiciones sobre la forma funcional de <span
+class="math inline">\(h_0(t)\)</span>, lo cual lo hace
+<strong>semiparamétrico</strong>.</p>
+<ul>
+<li>Si <span class="math inline">\(\exp(\beta_j) &gt; 1\)</span>: mayor
+riesgo de ocurrencia del evento asociado a un aumento en <span
+class="math inline">\(X_j\)</span>,</li>
+<li>Si <span class="math inline">\(\exp(\beta_j) &lt; 1\)</span>: efecto
+protector o menor riesgo,</li>
+<li>El modelo asume <strong>proporcionalidad de riesgos</strong>, es
+decir, que los efectos de las covariables no cambian en el tiempo.</li>
+</ul>
 <p><a href=""> <button>Descargar la base de datos</button> </a></p>
 <p><br></br> <a href="#beginning">Go to page beginning</a></p>
+</div>
 </div>
 
 

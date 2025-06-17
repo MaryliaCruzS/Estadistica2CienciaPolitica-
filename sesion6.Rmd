@@ -1,5 +1,5 @@
 ---
-title: "Eventos historicos"
+title: "Eventos historicos y Análisis de Supervivencia"
 output: html_document
 ---
 
@@ -12,14 +12,193 @@ output: html_document
 ## Docente: Marylia Cruz <br>
 
 ------------------------------------------------------------------------
+<br>
 
-## **Introducción a R**
+## **🎯 ¿Para qué sirve los Eventos históricos y el Análisis de Supervivencia?**
+
+<br>
+
+Para estudiar el tiempo que transcurre hasta que ocurre un evento específico (muerte, abandono, recaída, cambio de empleo, etc.) y analizar los factores que influyen en ese tiempo.
+
+<br>
+
+**Concepto clave:**
+
+- **Evento histórico:** suceso de interés cuya ocurrencia es registrada a lo largo del tiempo (ej.: muerte, recaída, abandono escolar, divorcio, cambio de empleo).
+
+- **Variable clave:** tiempo hasta el evento (tiempo de seguimiento o de permanencia).
+
+- Importante: el evento puede no observarse para todos los casos ➤ aparece la censura.
+
+</br>
+
+- **Tipos de censura**
+
+- 1. Censura a la derecha (la más común)
+
+Sabemos que el evento no ocurrió durante el tiempo de observación, pero no sabemos si o cuándo ocurrirá después.
+
+📌 Ejemplos:
+
+Un paciente sigue vivo al finalizar el estudio.
+Una persona no ha abandonado su trabajo al cierre de la encuesta.
+Un usuario no cancela su suscripción durante el periodo de seguimiento.
+
+🔁 Interpretación: sabemos que el tiempo al evento es mayor que el observado.
+
+- 2. Censura a la izquierda
+
+El evento ya había ocurrido antes de que comenzara el seguimiento, pero no sabemos exactamente cuándo.
+
+📌 Ejemplos:
+
+Encuestamos a personas sobre edad al primer empleo, pero algunas ya estaban trabajando antes del periodo estudiado, sin recordar la edad exacta.
+En un estudio de enfermedades crónicas, algunos participantes ya tenían la enfermedad al ingresar al estudio, pero no se conoce el momento exacto del diagnóstico.
+
+🔁 Interpretación: sabemos que el tiempo al evento es menor que el registrado.
+
+- 3. Censura intervalada
+
+No conocemos la fecha exacta del evento, pero sabemos que ocurrió dentro de un intervalo de tiempo.
+
+📌 Ejemplos:
+
+Un paciente realiza chequeos médicos anuales y en uno de ellos aparece la enfermedad, pero no sabemos cuándo exactamente surgió entre chequeos.
+Una mujer realiza un test de embarazo mensual. El test da negativo en enero y positivo en febrero: el evento (embarazo) ocurrió entre ambos meses.
+
+🔁 Interpretación: sabemos que el evento ocurrió entre dos tiempos conocidos.
+
+
+# **Ejemplos **
+
+```{r, echo=FALSE}
+knitr::kable(data.frame(
+  `Caso de Estudio` = c("Caída de regímenes democráticos", "Firma de tratados de paz en guerras civiles",
+                        "Estabilidad de coaliciones", "Transición democrática", "Permanencia en alianzas"),
+  `Evento de Interés` = c("Quiebre del régimen democrático", "Firma del tratado de paz", 
+                          "Disolución de la coalición", "Democratización formal del régimen", 
+                          "Salida de la alianza"),
+  `Unidad de Análisis` = c("País-año", "Conflicto armado", "Coalición", "País", "País-alianza"),
+  `Variable de Tiempo` = c("Años desde transición democrática", "Años desde inicio del conflicto", 
+                           "Meses desde formación", "Años bajo régimen autoritario", 
+                           "Años desde entrada a la alianza"),
+  `Censura` = c("Democracias aún vigentes", "Conflictos aún activos", 
+                "Coaliciones aún vigentes", "Países aún autoritarios", "Países aún miembros"),
+  `Covariables Posibles` = c("PBI per cápita, fragmentación, desigualdad", 
+                              "Intervención externa, intensidad", 
+                              "Ideología, liderazgo, crisis económica", 
+                              "Protestas, presión internacional", 
+                              "Cambio de liderazgo, amenazas externas")
+))
+
+```
+
+
+</br>
+
+# **📈 ANÁLISIS KAPLAN-MEIER**
+
+</br>
+
+## **✅ ¿Para qué sirve?**
+
+Estimar la probabilidad de "sobrevivir" más allá de cierto tiempo.
+Comparar grupos de personas (por ejemplo, hombres vs. mujeres) en términos de duración hasta el evento.
+
+</br>
+
+
+## **⚙️ ¿Cómo funciona?**
+
+Divide el tiempo en intervalos donde ocurren eventos.
+Calcula la probabilidad de sobrevivir en cada intervalo.
+Maneja correctamente casos censurados (personas que no llegaron al evento durante el seguimiento).
+
+</br>
+
+## Fórmula del Estimador de Kaplan-Meier
+
+El estimador de Kaplan-Meier se define como:
+
+$$
+\hat{S}(t) = \prod_{t_i \leq t} \left( 1 - \frac{d_i}{n_i} \right)
+$$
+
+donde:
+
+- \( \hat{S}(t) \) es la probabilidad estimada de sobrevivir más allá del tiempo \( t \),
+- \( t_i \) son los tiempos en los que ocurre al menos un evento,
+- \( d_i \) es el número de eventos (por ejemplo, muertes) ocurridos en el tiempo \( t_i \),
+- \( n_i \) es el número de individuos en riesgo justo antes de \( t_i \).
 
 
 
-<br></br>
+</br>
 
+## **📅 ¿Cuándo usarla?**
+
+Cuando queremos describir la duración hasta un evento.
+Comparar curvas de supervivencia entre grupos sin ajustar por otras variables.
+
+
+
+# **🛠 ¿Cómo se realiza?**
+
+Usar datos que incluyan:
+Tiempo de seguimiento.
+Evento (1 = ocurrió, 0 = censurado).
+Grupo (si hay comparación).
 </style>
+
+
+# **MODELO DE REGRESIÓN DE COX**
+
+## **✅ ¿Para qué sirve?**
+Evaluar el efecto de varias variables sobre el tiempo al evento.
+Calcular riesgos relativos (hazard ratios) ajustados.
+No requiere asumir una forma específica de la función de supervivencia.
+
+## **⚙️ ¿Cómo funciona?**
+
+Estima cómo las variables (edad, sexo, tratamiento...) afectan la razón de riesgo.
+Utiliza una función de riesgo basal no especificada y coeficientes exponenciales.
+Supone que las razones de riesgo son constantes en el tiempo (proporcionalidad de riesgos).
+
+## **📅 ¿Cuándo usarla?**
+
+Cuando se quiere hacer un análisis multivariado del tiempo hasta el evento.
+Ideal si hay variables continuas y categóricas.
+Cuando se necesita ajustar por confusores.
+
+## **🛠 ¿Cómo se realiza?**
+
+Base con:
+Tiempo.
+Evento (1/0).
+Covariables (edad, sexo, etc.).
+
+## Modelo de Regresión de Cox
+
+El modelo de Cox, o modelo de riesgos proporcionales, se expresa como:
+
+$$
+h(t | X) = h_0(t) \cdot \exp(\beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p)
+$$
+
+donde:
+
+- \( h(t | X) \) es la función de riesgo en el tiempo \( t \) dado el vector de covariables \( X \),
+- \( h_0(t) \) es la **función de riesgo basal** (baseline hazard), no especificada paramétricamente,
+- \( \beta_1, \beta_2, \dots, \beta_p \) son los coeficientes estimados para las covariables \( X_1, X_2, \dots, X_p \),
+- \( \exp(\beta_j) \) se interpreta como el **hazard ratio** asociado a la covariable \( X_j \).
+
+Este modelo permite estimar el efecto de las covariables sobre la razón de riesgo sin hacer suposiciones sobre la forma funcional de \( h_0(t) \), lo cual lo hace **semiparamétrico**.
+
+
+- Si \( \exp(\beta_j) > 1 \): mayor riesgo de ocurrencia del evento asociado a un aumento en \( X_j \),
+- Si \( \exp(\beta_j) < 1 \): efecto protector o menor riesgo,
+- El modelo asume **proporcionalidad de riesgos**, es decir, que los efectos de las covariables no cambian en el tiempo.
+
 
 <a href="">
   <button>Descargar la base de datos</button>
