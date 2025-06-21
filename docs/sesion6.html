@@ -581,6 +581,229 @@ protector o menor riesgo,</li>
 <li>El modelo asume <strong>proporcionalidad de riesgos</strong>, es
 decir, que los efectos de las covariables no cambian en el tiempo.</li>
 </ul>
+</div>
+<div id="cómo-se-realiza-en-r-el-análisis-de-eventos-historicos"
+class="section level2">
+<h2>¿Cómo se realiza en R el análisis de eventos historicos?**</h2>
+</div>
+<div id="ejemplo" class="section level2">
+<h2>Ejemplo:</h2>
+<p>Aunque la base ovarian tiene un origen clínico (cáncer de ovario),
+podemos usarla como una base para aprender análisis de eventos
+históricos (supervivencia).</p>
+<ul>
+<li>Cada paciente representa una “institución pública” observada a lo
+largo del tiempo. El evento de interés es “el colapso de la operación
+institucional” (similar a una falla del tratamiento). Queremos saber
+cuánto tiempo permanecen activas y si las decisiones iniciales (como el
+tipo de intervención recibida) afectan su duración activa.</li>
+</ul>
+<pre class="r"><code># Paso 1: Cargar librerías necesarias
+library(survival)
+library(survminer)
+
+# Cargar base de datos
+data(&quot;ovarian&quot;)</code></pre>
+<pre><code>## Warning in data(&quot;ovarian&quot;): data set &#39;ovarian&#39; not found</code></pre>
+<pre class="r"><code>head(ovarian)</code></pre>
+<pre><code>##   futime fustat     age resid.ds rx ecog.ps
+## 1     59      1 72.3315        2  1       1
+## 2    115      1 74.4932        2  1       1
+## 3    156      1 66.4658        2  1       2
+## 4    421      0 53.3644        2  2       1
+## 5    431      1 50.3397        2  1       1
+## 6    448      0 56.4301        1  1       2</code></pre>
+<ul>
+<li>futime Tiempo hasta evento o censura (días)</li>
+<li>fustat Estado: 1 = evento ocurrió, 0 = censurado</li>
+<li>rx Tipo de tratamiento recibido (1 o 2)</li>
+<li>age Edad de la paciente</li>
+</ul>
+</div>
+</div>
+<div
+id="el-tipo-de-tratamiento-recibido-afecta-la-duración-de-funcionamiento-institucional-supervivencia"
+class="section level1">
+<h1>¿El tipo de tratamiento recibido afecta la duración de
+funcionamiento institucional (supervivencia)?</h1>
+<pre class="r"><code>library(survival)
+library(survminer)
+
+data(&quot;ovarian&quot;)</code></pre>
+<pre><code>## Warning in data(&quot;ovarian&quot;): data set &#39;ovarian&#39; not found</code></pre>
+<pre class="r"><code>names(ovarian)</code></pre>
+<pre><code>## [1] &quot;futime&quot;   &quot;fustat&quot;   &quot;age&quot;      &quot;resid.ds&quot; &quot;rx&quot;       &quot;ecog.ps&quot;</code></pre>
+</div>
+<div id="definimos-el-modelo" class="section level1">
+<h1>Definimos el modelo</h1>
+<pre class="r"><code>km_modelo=survfit(Surv(futime,fustat)~rx,data=ovarian)
+summary(km_modelo)</code></pre>
+<pre><code>## Call: survfit(formula = Surv(futime, fustat) ~ rx, data = ovarian)
+## 
+##                 rx=1 
+##  time n.risk n.event survival std.err lower 95% CI upper 95% CI
+##    59     13       1    0.923  0.0739        0.789        1.000
+##   115     12       1    0.846  0.1001        0.671        1.000
+##   156     11       1    0.769  0.1169        0.571        1.000
+##   268     10       1    0.692  0.1280        0.482        0.995
+##   329      9       1    0.615  0.1349        0.400        0.946
+##   431      8       1    0.538  0.1383        0.326        0.891
+##   638      5       1    0.431  0.1467        0.221        0.840
+## 
+##                 rx=2 
+##  time n.risk n.event survival std.err lower 95% CI upper 95% CI
+##   353     13       1    0.923  0.0739        0.789        1.000
+##   365     12       1    0.846  0.1001        0.671        1.000
+##   464      9       1    0.752  0.1256        0.542        1.000
+##   475      8       1    0.658  0.1407        0.433        1.000
+##   563      7       1    0.564  0.1488        0.336        0.946</code></pre>
+<ul>
+<li><p>A los 59 días, 13 personas seguían en seguimiento, y ocurrió 1
+evento (falla). La probabilidad estimada de supervivencia hasta ese
+momento fue 92.3%.</p></li>
+<li><p>A los 115 días, el número de personas en riesgo era 12, y ocurrió
+otro evento. La probabilidad acumulada de seguir “viva” (sin evento)
+bajó a 84.6%</p></li>
+</ul>
+</div>
+<div id="gráfico" class="section level1">
+<h1>Gráfico</h1>
+<pre class="r"><code>ggsurvplot(km_modelo,
+           data=ovarian,
+           conf.int = TRUE,
+           pval = TRUE,
+           legend.labs=c(&quot;Tratamiento 1&quot;,&quot;Tramiento 2&quot;),
+           xlab=&quot;Días&quot;,
+           ylab=&quot;Probabilidad de supervivencia&quot;,
+           title=&quot;Curva de Kaplan-Meier según tratamiento&quot;)</code></pre>
+<p><img src="sesion6_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<ul>
+<li><p>Puedes comparar qué grupo tiene una caída más rápida, lo que
+indica menor supervivencia</p></li>
+<li><p>Puedes mirar el p-valor del test de log-rank en el gráfico
+(ggsurvplot(…, pval = TRUE)):</p></li>
+<li><p>Si p &lt; 0.05, hay diferencias estadísticamente significativas
+entre los grupos.</p></li>
+<li><p>Curvas que descienden más lentamente indican mayor duración /
+supervivencia.</p></li>
+<li><p>Curvas que caen rápido = mayor frecuencia de eventos (muertes,
+fallas, renuncias, etc.).</p></li>
+</ul>
+</div>
+<div id="qué-es-el-test-de-log-rank" class="section level1">
+<h1>¿Qué es el test de log-rank?</h1>
+<p>Es una prueba no paramétrica que compara si hay diferencias
+significativas en la supervivencia entre dos o más grupos a lo largo del
+tiempo.</p>
+<ul>
+<li>H₀ (nula): Las curvas de supervivencia no presentan diferencias
+significativas en todos los grupos.</li>
+</ul>
+</div>
+<div id="regreion-de-cox" class="section level1">
+<h1>Regreion de Cox</h1>
+<p>Estima el efecto de una o más covariables sobre el hazard (tasa de
+riesgo) de ocurrencia del evento a lo largo del tiempo.</p>
+<ul>
+<li>La fórmula general es:</li>
+</ul>
+<pre class="r"><code>cox_model=coxph(Surv(futime,fustat)~rx+age,data=ovarian)
+summary(cox_model)</code></pre>
+<pre><code>## Call:
+## coxph(formula = Surv(futime, fustat) ~ rx + age, data = ovarian)
+## 
+##   n= 26, number of events= 12 
+## 
+##         coef exp(coef) se(coef)      z Pr(&gt;|z|)   
+## rx  -0.80397   0.44755  0.63205 -1.272  0.20337   
+## age  0.14733   1.15873  0.04615  3.193  0.00141 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##     exp(coef) exp(-coef) lower .95 upper .95
+## rx     0.4475      2.234    0.1297     1.545
+## age    1.1587      0.863    1.0585     1.268
+## 
+## Concordance= 0.798  (se = 0.076 )
+## Likelihood ratio test= 15.89  on 2 df,   p=4e-04
+## Wald test            = 13.47  on 2 df,   p=0.001
+## Score (logrank) test = 18.56  on 2 df,   p=9e-05</code></pre>
+<ul>
+<li><p>Estimamos el efecto del tipo de tratamiento y de la edad sobre el
+riesgo de colapso institucional.</p></li>
+<li><p>El hazard ratio de rx indica si un tratamiento acelera o retrasa
+el evento, controlando por la edad.</p></li>
+</ul>
+<p>Si el HR de rx es &lt; 1, entonces el tratamiento 2 reduce el riesgo
+de colapso, prolongando la duración operativa.</p>
+<p>Si el HR &gt; 1, el tratamiento 2 acelera el evento, indicando menor
+supervivencia.</p>
+<p>Si el p-valor &lt; 0.05, la diferencia es estadísticamente
+significativa.</p>
+<ul>
+<li>rx : tratamiento (expo del coeficiente 0.44)</li>
+</ul>
+<p>Las personas que recibieron el tratamiento rx=2 tiene un 56% menos de
+riesgo de que ocurra el evento en comparación con el grupo rx=1</p>
+<ul>
+<li>edad = ( expo coeficiente 1.158)</li>
+</ul>
+<p>Por cada año adicional de edad, el riesgo de que ocurra el evento
+aumenta en 15.8%, manteniendo constante el resto de los factores
+(independiente del tratamiento)</p>
+</div>
+<div id="visualización" class="section level1">
+<h1>Visualización</h1>
+<p>Esto genera un forest plot con los hazard ratios y sus intervalos de
+confianza.</p>
+<pre class="r"><code>library(survminer)
+ggforest(cox_model,data=ovarian)</code></pre>
+<p><img src="sesion6_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<ul>
+<li>Una línea vertical en HR = 1: esta es la línea de no efecto.</li>
+</ul>
+<p>Cada variable del modelo tiene:</p>
+<ul>
+<li>Un punto (el HR estimado),</li>
+<li>Una barra horizontal (intervalo de confianza al 95%)</li>
+</ul>
+<div
+id="interpretación-del-hazard-ratio-hr-en-gráficos-tipo-forest-plot"
+class="section level2">
+<h2>Interpretación del Hazard Ratio (HR) en gráficos tipo Forest
+Plot</h2>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="59%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Posición del HR con respecto a 1</th>
+<th>Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>HR a la derecha de 1</td>
+<td>Aumenta el riesgo (<strong>HR &gt; 1</strong>)</td>
+</tr>
+<tr class="even">
+<td>HR a la izquierda de 1</td>
+<td>Disminuye el riesgo (<strong>HR &lt; 1</strong>, efecto
+protector)</td>
+</tr>
+<tr class="odd">
+<td>Intervalo de confianza cruza el 1</td>
+<td>No significativo (<strong>p &gt; 0.05</strong>)</td>
+</tr>
+<tr class="even">
+<td>Intervalo de confianza fuera del 1</td>
+<td>Efecto estadísticamente significativo (<strong>p &lt;
+0.05</strong>)</td>
+</tr>
+</tbody>
+</table>
 <p><a href=""> <button>Descargar la base de datos</button> </a></p>
 <p><br></br> <a href="#beginning">Go to page beginning</a></p>
 </div>

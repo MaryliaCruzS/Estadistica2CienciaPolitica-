@@ -67,7 +67,9 @@ head(aprobacion_Boluarte)
 Seleccionar columnas especificadas.
 
 ```{r}
-aprobacion_1=aprobacion %>% select(Año, Mes,Gobierno,Aprobacion_presidente)
+library(dplyr)
+aprobacion_1=aprobacion %>% 
+  dplyr::select(Año, Mes,Gobierno,Aprobacion_presidente)
 
 names(aprobacion_1)
 ```

@@ -144,11 +144,11 @@ Si hay más de dos categorías en la variable dependiente, deberías usar **regr
 <br>
 
 **Apertura de datos **
+
 ```{r}
 library(rio)
 library(dplyr)
 datos=import("Base_de_datos_acoso_2019.sav")
-datos=datos %>% select(indiceAC_dico, NSEGRUP,SEXO,GEDAD,EDAD,NIVEDU)
 
 names(datos)
 ```

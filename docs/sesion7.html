@@ -271,6 +271,9 @@ $(document).ready(function () {
     <li>
       <a href="sesion3.html">Regresión Logistica Binaria</a>
     </li>
+    <li>
+      <a href="sesion6.html">Eventos históricos</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -296,7 +299,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="sesion6.html">Organización de datos</a>
+      <a href="sesion7.html">Organización de datos</a>
     </li>
   </ul>
 </li>
@@ -348,9 +351,8 @@ class="uri">https://democracia-gobernabilidad.pucp.edu.pe/poderes-del-estado/eje
 <pre class="r"><code>library(rio)
 aprobacion=import(&quot;Aprobación presidencial.xlsx&quot;)</code></pre>
 <pre class="r"><code>names(aprobacion)</code></pre>
-<pre><code>## [1] &quot;Año&quot;                      &quot;Mes&quot;                     
-## [3] &quot;Gobierno&quot;                 &quot;Aprobacion_presidente&quot;   
-## [5] &quot;Desaprobacion_presidente&quot; &quot;No sabe_presidente&quot;</code></pre>
+<pre><code>## [1] &quot;Año&quot;                      &quot;Mes&quot;                      &quot;Gobierno&quot;                
+## [4] &quot;Aprobacion_presidente&quot;    &quot;Desaprobacion_presidente&quot; &quot;No sabe_presidente&quot;</code></pre>
 </div>
 <div id="funciones-del-paquete-dplyr" class="section level2">
 <h2><strong>Funciones del paquete dplyr</strong></h2>
@@ -360,14 +362,6 @@ manipulación de datos sea más eficiente, legible y coherente,
 especialmente cuando se trabaja con grandes bases de datos o con
 data.frame y tibble.</p>
 <pre class="r"><code>library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
 </div>
 <div id="filter" class="section level2">
 <h2><strong>filter()</strong></h2>
@@ -395,7 +389,9 @@ data.frame y tibble.</p>
 <div id="select" class="section level2">
 <h2><strong>select()</strong></h2>
 <p>Seleccionar columnas especificadas.</p>
-<pre class="r"><code>aprobacion_1=aprobacion %&gt;% select(Año, Mes,Gobierno,Aprobacion_presidente)
+<pre class="r"><code>library(dplyr)
+aprobacion_1=aprobacion %&gt;% 
+  dplyr::select(Año, Mes,Gobierno,Aprobacion_presidente)
 
 names(aprobacion_1)</code></pre>
 <pre><code>## [1] &quot;Año&quot;                   &quot;Mes&quot;                   &quot;Gobierno&quot;             

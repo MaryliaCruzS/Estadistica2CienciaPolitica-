@@ -508,21 +508,17 @@ R?</strong></h2>
 <p><br></p>
 <p><strong>Apertura de datos </strong></p>
 <pre class="r"><code>library(rio)
-library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>datos=import(&quot;Base_de_datos_acoso_2019.sav&quot;)
-datos=datos %&gt;% select(indiceAC_dico, NSEGRUP,SEXO,GEDAD,EDAD,NIVEDU)
+library(dplyr)
+datos=import(&quot;Base_de_datos_acoso_2019.sav&quot;)
 
 names(datos)</code></pre>
-<pre><code>## [1] &quot;indiceAC_dico&quot; &quot;NSEGRUP&quot;       &quot;SEXO&quot;          &quot;GEDAD&quot;        
-## [5] &quot;EDAD&quot;          &quot;NIVEDU&quot;</code></pre>
+<pre><code>##  [1] &quot;SERIE&quot;         &quot;NVONRO&quot;        &quot;NSEGRUP&quot;       &quot;NSE&quot;           &quot;SEXO&quot;         
+##  [6] &quot;GEDAD&quot;         &quot;EDAD&quot;          &quot;NIVEDU&quot;        &quot;P10A&quot;          &quot;P10B&quot;         
+## [11] &quot;P10C&quot;          &quot;P11A&quot;          &quot;P11B&quot;          &quot;P11C&quot;          &quot;P12A&quot;         
+## [16] &quot;P12B&quot;          &quot;P12C&quot;          &quot;P12D&quot;          &quot;P12E&quot;          &quot;P12F&quot;         
+## [21] &quot;P12G&quot;          &quot;P12H&quot;          &quot;P13A&quot;          &quot;P13B&quot;          &quot;P13C&quot;         
+## [26] &quot;P13D&quot;          &quot;P13E&quot;          &quot;P13F&quot;          &quot;P13G&quot;          &quot;P13H&quot;         
+## [31] &quot;indiceAC&quot;      &quot;indiceAC_dico&quot;</code></pre>
 <pre class="r"><code>datos &lt;- datos %&gt;%
   filter(!is.na(indiceAC_dico))</code></pre>
 <p><strong>Formateo de variables </strong></p>
@@ -658,14 +654,8 @@ observados. En regresión logística binaria, como no se usa R² clásico
 Valores típicos: entre 0.2 y 0.4 se consideran un buen ajuste. Se
 interpreta comparativamente: un pseudo-R² más alto indica mejor
 ajuste.</p>
-<pre class="r"><code>library(pscl)</code></pre>
-<pre><code>## Classes and Methods for R originally developed in the
-## Political Science Computational Laboratory
-## Department of Political Science
-## Stanford University (2002-2015),
-## by and under the direction of Simon Jackman.
-## hurdle and zeroinfl functions by Achim Zeileis.</code></pre>
-<pre class="r"><code>pR2(modelo1)  # Pseudo-R2</code></pre>
+<pre class="r"><code>library(pscl)
+pR2(modelo1)  # Pseudo-R2</code></pre>
 <pre><code>## fitting null model for pseudo-r2</code></pre>
 <pre><code>##          llh      llhNull           G2     McFadden         r2ML         r2CU 
 ## -373.5703709 -467.3359539  187.5311660    0.2006385    0.2413292    0.3228268</code></pre>
@@ -680,14 +670,8 @@ vs especificidad en distintos umbrales. AUC (Área bajo la curva): valor
 entre 0 y 1. - 0.5: sin poder discriminativo (equivale a lanzar una
 moneda) - 1.0: discriminación perfecta - &gt; 0.7: aceptable; &gt; 0.8:
 buena; &gt; 0.9: excelente</p>
-<pre class="r"><code>library(pROC)</code></pre>
-<pre><code>## Type &#39;citation(&quot;pROC&quot;)&#39; for a citation.</code></pre>
-<pre><code>## 
-## Attaching package: &#39;pROC&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     cov, smooth, var</code></pre>
-<pre class="r"><code># 1. Obtener los valores predichos
+<pre class="r"><code>library(pROC)
+# 1. Obtener los valores predichos
 predicciones &lt;- predict(modelo1, type = &quot;response&quot;)
 predicciones1=fitted(modelo1)
 # 2. Crear curva ROC
@@ -724,11 +708,6 @@ ggplot(roc_df, aes(x = FPR, y = TPR)) +
     y = &quot;Tasa de Verdaderos Positivos (Sensibilidad)&quot;
   ) +
   theme_minimal()</code></pre>
-<pre><code>## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-## ℹ Please use `linewidth` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.</code></pre>
 <p><img src="sesion3_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <ul>
 <li><strong>Matriz de confusión – precisión de predicción</strong></li>
@@ -765,9 +744,9 @@ summary(margins(modelo1))</code></pre>
 <pre class="r"><code>modelo1 &lt;- glm(indiceAC_dico ~ SEXO +EDAD , data = datos, family = binomial())
 modelo2 &lt;- glm(indiceAC_dico ~ SEXO +EDAD +NSEGRUP, data = datos, family = binomial())
 modelo3 &lt;- glm(indiceAC_dico ~  EDAD , data = datos, family = binomial())</code></pre>
-<pre class="r"><code>library(sjPlot)</code></pre>
-<pre><code>## Learn more about sjPlot with &#39;browseVignettes(&quot;sjPlot&quot;)&#39;.</code></pre>
-<pre class="r"><code>plot_model(modelo1, type = &quot;est&quot;, transform = &quot;exp&quot;)  #</code></pre>
+<pre class="r"><code>library(sjPlot)
+
+plot_model(modelo1, type = &quot;est&quot;, transform = &quot;exp&quot;)  #</code></pre>
 <p><img src="sesion3_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 </style>
 <p><a href="https://paideia.pucp.edu.pe/cursos/mod/resource/view.php?id=2381681">

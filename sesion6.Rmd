@@ -200,6 +200,153 @@ Este modelo permite estimar el efecto de las covariables sobre la razón de ries
 - El modelo asume **proporcionalidad de riesgos**, es decir, que los efectos de las covariables no cambian en el tiempo.
 
 
+## ¿Cómo se realiza en R el análisis de eventos historicos?**
+
+## Ejemplo:
+
+
+Aunque la base ovarian tiene un origen clínico (cáncer de ovario), podemos usarla como una base para aprender análisis de eventos históricos (supervivencia).
+
+
+- Cada paciente representa una "institución pública" observada a lo largo del tiempo. El evento de interés es "el colapso de la operación institucional" (similar a una falla del tratamiento). Queremos saber cuánto tiempo permanecen activas y si las decisiones iniciales (como el tipo de intervención recibida) afectan su duración activa.
+
+
+
+```{r}
+# Paso 1: Cargar librerías necesarias
+library(survival)
+library(survminer)
+
+# Cargar base de datos
+data("ovarian")
+head(ovarian)
+
+
+
+```
+
+
+- futime	Tiempo hasta evento o censura (días)
+- fustat	Estado: 1 = evento ocurrió, 0 = censurado
+- rx	Tipo de tratamiento recibido (1 o 2)
+- age	Edad de la paciente
+
+# ¿El tipo de tratamiento recibido afecta la duración de funcionamiento institucional (supervivencia)?
+
+```{r}
+library(survival)
+library(survminer)
+
+data("ovarian")
+
+names(ovarian)
+```
+
+# Definimos el modelo
+
+```{r}
+km_modelo=survfit(Surv(futime,fustat)~rx,data=ovarian)
+summary(km_modelo)
+```
+
+- A los 59 días, 13 personas seguían en seguimiento, y ocurrió 1 evento (falla). La probabilidad estimada de supervivencia hasta ese momento fue 92.3%.
+
+- A los 115 días, el número de personas en riesgo era 12, y ocurrió otro evento. La probabilidad acumulada de seguir "viva" (sin evento) bajó a 84.6%
+
+# Gráfico
+
+```{r}
+ggsurvplot(km_modelo,
+           data=ovarian,
+           conf.int = TRUE,
+           pval = TRUE,
+           legend.labs=c("Tratamiento 1","Tramiento 2"),
+           xlab="Días",
+           ylab="Probabilidad de supervivencia",
+           title="Curva de Kaplan-Meier según tratamiento")
+```
+
+- Puedes comparar qué grupo tiene una caída más rápida, lo que indica menor supervivencia
+
+- Puedes mirar el p-valor del test de log-rank en el gráfico (ggsurvplot(..., pval = TRUE)):
+- Si p < 0.05, hay diferencias estadísticamente significativas entre los grupos.
+
+- Curvas que descienden más lentamente indican mayor duración / supervivencia.
+
+- Curvas que caen rápido = mayor frecuencia de eventos (muertes, fallas, renuncias, etc.).
+
+# ¿Qué es el test de log-rank?
+
+Es una prueba no paramétrica que compara si hay diferencias significativas en la supervivencia entre dos o más grupos a lo largo del tiempo.
+
+- H₀ (nula): Las curvas de supervivencia no presentan diferencias significativas en todos los grupos.
+
+
+# Regreion de Cox
+
+Estima el efecto de una o más covariables sobre el hazard (tasa de riesgo) de ocurrencia del evento a lo largo del tiempo.
+
+- La fórmula general es:
+
+```{r}
+cox_model=coxph(Surv(futime,fustat)~rx+age,data=ovarian)
+summary(cox_model)
+
+```
+
+
+
+
+- Estimamos el efecto del tipo de tratamiento y de la edad sobre el riesgo de colapso institucional.
+
+- El hazard ratio de rx indica si un tratamiento acelera o retrasa el evento, controlando por la edad.
+
+
+Si el HR de rx es < 1, entonces el tratamiento 2 reduce el riesgo de colapso, prolongando la duración operativa.
+
+Si el HR > 1, el tratamiento 2 acelera el evento, indicando menor supervivencia.
+
+Si el p-valor < 0.05, la diferencia es estadísticamente significativa.
+
+
+- rx : tratamiento (expo del coeficiente 0.44)
+
+Las personas que recibieron el tratamiento rx=2 tiene un 56% menos de riesgo de que ocurra el evento en comparación con el grupo rx=1
+
+- edad = ( expo coeficiente 1.158)
+
+Por cada año adicional de edad, el riesgo de que ocurra el evento aumenta en 15.8%, manteniendo constante el resto de los factores (independiente del tratamiento)
+
+
+
+# Visualización
+
+Esto genera un forest plot con los hazard ratios y sus intervalos de confianza.
+
+```{r}
+library(survminer)
+ggforest(cox_model,data=ovarian)
+```
+
+
+
+- Una línea vertical en HR = 1: esta es la línea de no efecto.
+
+Cada variable del modelo tiene:
+
+- Un punto (el HR estimado),
+- Una barra horizontal (intervalo de confianza al 95%)
+
+##  Interpretación del Hazard Ratio (HR) en gráficos tipo Forest Plot
+
+| Posición del HR con respecto a 1     | Interpretación                                         |
+|--------------------------------------|--------------------------------------------------------|
+| HR a la derecha de 1                 | Aumenta el riesgo (**HR > 1**)                         |
+| HR a la izquierda de 1               | Disminuye el riesgo (**HR < 1**, efecto protector)     |
+| Intervalo de confianza cruza el 1    | No significativo (**p > 0.05**)                        |
+| Intervalo de confianza fuera del 1   | Efecto estadísticamente significativo (**p < 0.05**)   |
+
+
 <a href="">
   <button>Descargar la base de datos</button>
 </a>
