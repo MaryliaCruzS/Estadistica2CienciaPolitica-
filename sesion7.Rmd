@@ -32,12 +32,12 @@ Aragón, Jorge, Marylia Cruz, Karina Alcántara, y Paolo Sánchez. Dashboard de 
 
 ```{r}
 library(rio)
-aprobacion=import("Aprobación presidencial.xlsx")
+aprobacion_1=import("Aprobación presidencial.xlsx")
 ```
 
 
 ```{r}
-names(aprobacion)
+names(aprobacion_1)
 ```
 
 ## **Funciones del paquete dplyr**
@@ -54,7 +54,7 @@ Filtra solo la aprobación del gobierno de Boluarte
 Ahora guardar la base filtrada en este nuevo objeto "aprobacion_Boluarte".
 
 ```{r}
-aprobacion_Boluarte=aprobacion %>% filter(Gobierno == "Boluarte")
+aprobacion_Boluarte=aprobacion_1 %>% filter(Gobierno == "Boluarte")
 ```
 
 Usa *head* para ver las primeras filas de la base de datos
@@ -68,8 +68,8 @@ Seleccionar columnas especificadas.
 
 ```{r}
 library(dplyr)
-aprobacion_1=aprobacion %>% 
-  dplyr::select(Año, Mes,Gobierno,Aprobacion_presidente)
+#aprobacion_1=aprobacion %>% 
+  #dplyr::select(Año, Mes,Gobierno,Aprobacion_presidente)
 
 names(aprobacion_1)
 ```
