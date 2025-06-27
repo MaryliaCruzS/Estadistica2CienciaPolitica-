@@ -11,7 +11,7 @@
 
 
 
-<title>Análisis Factorial</title>
+<title>Juntar bases de datos</title>
 
 <script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -318,13 +318,11 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Análisis Factorial</h1>
+<h1 class="title toc-ignore">Juntar bases de datos</h1>
 
 </div>
 
 
-<div id="análisis-factorial" class="section level1">
-<h1>Análisis Factorial</h1>
 <center>
 <img src=" " width="200"/>
 </center>
@@ -339,13 +337,62 @@ class="section level2">
 <h2>Docente: Marylia Cruz <br></h2>
 <hr />
 </div>
-<div id="introducción-a-r" class="section level2">
-<h2><strong>Introducción a R</strong></h2>
-<p><br></br></p>
+<div id="apertura-de-la-base-de-datos" class="section level2">
+<h2><strong>Apertura de la base de datos</strong></h2>
+<p>Esta base de datos corresponde a datos de la Encuesta Mundial de
+Valores. <br></br></p>
 </style>
 <p><a href=""> <button>Descargar la base de datos</button> </a></p>
-<p><br></br> <a href="#beginning">Go to page beginning</a></p>
+<pre class="r"><code>library(rio)
+data=import(&quot;data_wvs.xlsx&quot;)</code></pre>
+<pre class="r"><code>names(data)</code></pre>
+<pre><code>## [1] &quot;Country&quot;                          &quot;Justificable_Abortion&quot;           
+## [3] &quot;Country2&quot;                         &quot;Justificable_Homosexuality&quot;      
+## [5] &quot;Country3&quot;                         &quot;Justificable_Sex_before_marriage&quot;
+## [7] &quot;Country4&quot;                         &quot;Justificable_Divorce&quot;</code></pre>
 </div>
+<div id="funciones-del-paquete-dplyr" class="section level2">
+<h2><strong>Funciones del paquete dplyr</strong></h2>
+<p>El paquete dplyr es una de las herramientas más poderosas y populares
+del ecosistema tidyverse en R. Está diseñado para hacer que la
+manipulación de datos sea más eficiente, legible y coherente,
+especialmente cuando se trabaja con grandes bases de datos o con
+data.frame y tibble.</p>
+<pre class="r"><code>library(dplyr)</code></pre>
+</div>
+<div id="select" class="section level2">
+<h2><strong>select()</strong></h2>
+<p>Seleccionar las dos columnas de la base de datos, y crear subbases de
+datos.</p>
+<pre class="r"><code>data1 &lt;- data[, c(&quot;Country&quot;, &quot;Justificable_Abortion&quot;)]
+
+data2 &lt;- data[, c(&quot;Country2&quot;, &quot;Justificable_Homosexuality&quot;)]
+
+data3 &lt;- data[, c(&quot;Country3&quot;, &quot;Justificable_Sex_before_marriage&quot;)]
+
+data4 &lt;- data[, c(&quot;Country4&quot;, &quot;Justificable_Divorce&quot;)]</code></pre>
+</div>
+<div id="names" class="section level2">
+<h2><strong>names()</strong></h2>
+<p>Dado que tienen nombres diferentes, necesito unificar los nombres.
+Para cambiar de nombres.</p>
+<pre class="r"><code>names(data2)[names(data2) == &quot;Country2&quot;] &lt;- &quot;Country&quot;
+names(data3)[names(data3) == &quot;Country3&quot;] &lt;- &quot;Country&quot;
+names(data4)[names(data4) == &quot;Country4&quot;] &lt;- &quot;Country&quot;</code></pre>
+</div>
+<div id="full_join" class="section level2">
+<h2><strong>full_join()</strong></h2>
+<p>Unir las bases de datos con full_join por Country.</p>
+<pre class="r"><code>library(dplyr)
+library(purrr)
+
+data_completa &lt;- list(data1, data2, data3, data4) %&gt;%
+  reduce(full_join, by = &quot;Country&quot;)
+
+
+
+data_completa &lt;- data_completa[1:88, ] #solo considerar las 88 filas primeras porque luego son NA</code></pre>
+<p><br></br> <a href="#beginning">Go to page beginning</a></p>
 </div>
 
 

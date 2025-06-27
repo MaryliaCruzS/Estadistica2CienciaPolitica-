@@ -301,6 +301,9 @@ $(document).ready(function () {
     <li>
       <a href="sesion7.html">Organización de datos</a>
     </li>
+    <li>
+      <a href="sesion8.html">Juntar bases de datos</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -349,8 +352,8 @@ class="uri">https://democracia-gobernabilidad.pucp.edu.pe/poderes-del-estado/eje
 <p><a href="https://paideia.pucp.edu.pe/cursos/mod/resource/view.php?id=2373025">
 <button>Descargar la base de datos</button> </a></p>
 <pre class="r"><code>library(rio)
-aprobacion=import(&quot;Aprobación presidencial.xlsx&quot;)</code></pre>
-<pre class="r"><code>names(aprobacion)</code></pre>
+aprobacion_1=import(&quot;Aprobación presidencial.xlsx&quot;)</code></pre>
+<pre class="r"><code>names(aprobacion_1)</code></pre>
 <pre><code>## [1] &quot;Año&quot;                      &quot;Mes&quot;                      &quot;Gobierno&quot;                
 ## [4] &quot;Aprobacion_presidente&quot;    &quot;Desaprobacion_presidente&quot; &quot;No sabe_presidente&quot;</code></pre>
 </div>
@@ -368,34 +371,27 @@ data.frame y tibble.</p>
 <p>Filtra solo la aprobación del gobierno de Boluarte</p>
 <p>Ahora guardar la base filtrada en este nuevo objeto
 “aprobacion_Boluarte”.</p>
-<pre class="r"><code>aprobacion_Boluarte=aprobacion %&gt;% filter(Gobierno == &quot;Boluarte&quot;)</code></pre>
+<pre class="r"><code>aprobacion_Boluarte=aprobacion_1 %&gt;% filter(Gobierno == &quot;Boluarte&quot;)</code></pre>
 <p>Usa <em>head</em> para ver las primeras filas de la base de datos</p>
 <pre class="r"><code>head(aprobacion_Boluarte)</code></pre>
-<pre><code>##    Año       Mes Gobierno Aprobacion_presidente Desaprobacion_presidente
-## 1 2022 Diciembre Boluarte                  0.21                     0.68
-## 2 2023     Enero Boluarte                  0.20                     0.71
-## 3 2023   Febrero Boluarte                  0.18                     0.74
-## 4 2023     Marzo Boluarte                  0.17                     0.76
-## 5 2023     Abril Boluarte                  0.15                     0.77
-## 6 2023      Mayo Boluarte                  0.16                     0.75
-##   No sabe_presidente
-## 1               0.11
-## 2               0.09
-## 3               0.08
-## 4               0.07
-## 5               0.08
-## 6               0.09</code></pre>
+<pre><code>##    Año       Mes Gobierno Aprobacion_presidente Desaprobacion_presidente No sabe_presidente
+## 1 2022 Diciembre Boluarte                  0.21                     0.68               0.11
+## 2 2023     Enero Boluarte                  0.20                     0.71               0.09
+## 3 2023   Febrero Boluarte                  0.18                     0.74               0.08
+## 4 2023     Marzo Boluarte                  0.17                     0.76               0.07
+## 5 2023     Abril Boluarte                  0.15                     0.77               0.08
+## 6 2023      Mayo Boluarte                  0.16                     0.75               0.09</code></pre>
 </div>
 <div id="select" class="section level2">
 <h2><strong>select()</strong></h2>
 <p>Seleccionar columnas especificadas.</p>
 <pre class="r"><code>library(dplyr)
-aprobacion_1=aprobacion %&gt;% 
-  dplyr::select(Año, Mes,Gobierno,Aprobacion_presidente)
+#aprobacion_1=aprobacion %&gt;% 
+  #dplyr::select(Año, Mes,Gobierno,Aprobacion_presidente)
 
 names(aprobacion_1)</code></pre>
-<pre><code>## [1] &quot;Año&quot;                   &quot;Mes&quot;                   &quot;Gobierno&quot;             
-## [4] &quot;Aprobacion_presidente&quot;</code></pre>
+<pre><code>## [1] &quot;Año&quot;                      &quot;Mes&quot;                      &quot;Gobierno&quot;                
+## [4] &quot;Aprobacion_presidente&quot;    &quot;Desaprobacion_presidente&quot; &quot;No sabe_presidente&quot;</code></pre>
 </div>
 <div id="mutate" class="section level2">
 <h2><strong>mutate()</strong></h2>
@@ -403,8 +399,9 @@ names(aprobacion_1)</code></pre>
 <pre class="r"><code>aprobacion_1=aprobacion_1  %&gt;% mutate(deaprobacion=100-Aprobacion_presidente)
 
 names(aprobacion_1)</code></pre>
-<pre><code>## [1] &quot;Año&quot;                   &quot;Mes&quot;                   &quot;Gobierno&quot;             
-## [4] &quot;Aprobacion_presidente&quot; &quot;deaprobacion&quot;</code></pre>
+<pre><code>## [1] &quot;Año&quot;                      &quot;Mes&quot;                      &quot;Gobierno&quot;                
+## [4] &quot;Aprobacion_presidente&quot;    &quot;Desaprobacion_presidente&quot; &quot;No sabe_presidente&quot;      
+## [7] &quot;deaprobacion&quot;</code></pre>
 </div>
 <div id="group_by-summarise" class="section level2">
 <h2><strong>group_by() + summarise()</strong></h2>

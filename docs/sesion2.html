@@ -301,6 +301,9 @@ $(document).ready(function () {
     <li>
       <a href="sesion7.html">Organización de datos</a>
     </li>
+    <li>
+      <a href="sesion8.html">Juntar bases de datos</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -713,8 +716,8 @@ summary(modelo_nb)</code></pre>
 <p>Si el modelo binomial negativa mejora el ajuste, confirma que la
 sobredispersión era relevante.</p>
 <pre class="r"><code>AIC(modelo_poisson, modelo_qp,modelo_nb)</code></pre>
-<pre><code>## Warning in AIC.default(modelo_poisson, modelo_qp, modelo_nb): models are not all
-## fitted to the same number of observations</code></pre>
+<pre><code>## Warning in AIC.default(modelo_poisson, modelo_qp, modelo_nb): models are not all fitted to the
+## same number of observations</code></pre>
 <pre><code>##                df       AIC
 ## modelo_poisson  4 1014.9897
 ## modelo_qp       4        NA

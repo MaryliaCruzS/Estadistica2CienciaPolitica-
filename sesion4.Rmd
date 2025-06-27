@@ -15,8 +15,258 @@ output: html_document
 
 ------------------------------------------------------------------------
 
-## **Introducción a R**
+## **Objetivo**
 
+Aplicar técnicas de análisis de clúster (jerárquico y k-medias) a un conjunto de datos para identificar agrupaciones de observaciones con características similares.
+
+
+El análisis de clúster es una técnica de clasificación no supervisada que permite agrupar observaciones con base en su similitud. Entre los métodos más comunes están:
+
+# Clúster Jerárquico
+
+*Clúster Jerárquico:* agrupa observaciones de forma aglomerativa o divisiva, creando un dendrograma.
+
+- Este método agrupa las observaciones progresivamente en una estructura en forma de árbol, conocida como dendrograma. Existen dos enfoques:
+
+Aglomerativo (el más usado): parte de cada observación como su propio grupo y las va uniendo.
+
+Divisivo: parte de un solo grupo y lo va dividiendo.
+
+1. Calcular la matriz de distancias entre todas las observaciones.
+
+2. Unir los grupos más cercanos (según un criterio de enlace: Ward, promedio, completo, etc.).
+
+3. Repetir hasta que todos estén en un solo clúster.
+
+4. Elegir un número de clústeres cortando el dendrograma a cierta altura.
+
+*Ventajas*
+
+- No requiere definir previamente el número de clústeres.
+
+- Permite ver cómo se forman los grupos a lo largo del proceso.
+
+- Útil para datos pequeños o exploratorios
+
+*Desventajas*
+
+- Poco eficiente para grandes volúmenes de datos.
+
+- Decisiones iniciales (como el método de enlace) afectan el resultado.
+
+
+1. Cargar datos
+
+```{r}
+library(rio)
+data=import("data_wvs_consolidada.xlsx")
+```
+
+
+```{r}
+rownames(data) <- data$Country
+```
+
+2. Preparar datos numéricos y escalar
+
+```{r}
+library(dplyr)
+# Escalamos los datos para evitar sesgos por diferencias de magnitud
+
+data_numerica <- data %>% 
+  dplyr::select(-Country) %>% 
+  dplyr::select_if(is.numeric)
+
+
+data_escalada=scale(data_numerica)
+data_escalada=as.data.frame(data_escalada)
+```
+
+
+3. Calcular matriz de distancias
+
+
+
+Calculamos las distancias euclidianas entre todas las observaciones. Esta matriz será la base para formar los grupos.
+
+
+```{r}
+distancias <- dist(data_escalada, method = "euclidean")
+```
+
+
+4. Aplicar clúster jerárquico (método Ward)
+
+Utilizamos el método aglomerativo de Ward (ward.D2), que minimiza la varianza dentro de cada grupo al ir fusionando observaciones.
+
+```{r}
+hc <- hclust(distancias, method = "ward.D2")
+```
+
+
+5. Visualizar dendrograma
+
+El dendrograma muestra gráficamente cómo se agrupan las observaciones paso a paso. Podemos elegir el número de clústeres “cortando” el árbol a cierta altura. Aquí sugerimos usar 4 grupos.
+
+```{r}
+plot(hc, hang = -1, main = "Dendrograma de Clúster Jerárquico")
+```
+
+
+- Añadimos colores para visualizar 4 clústeres
+
+```{r}
+#rect.hclust(hc, k = 4, border = 2:5)
+```
+
+*6. Cortar en 4 clústeres*
+
+Asignamos cada observación a uno de los 4 grupos, según el corte que hicimos en el dendrograma.
+
+```{r}
+grupos <- cutree(hc, k = 4)
+```
+
+
+
+- Revisamos cuántas observaciones hay en cada grupo
+```{r}
+table(grupos) 
+```
+
+
+7. Agregar clúster al dataframe original
+
+Agregamos la asignación de clúster como una nueva variable en el conjunto de datos original. Esto permite luego comparar perfiles de grupo.
+
+```{r}
+data_escalada$Cluster <- as.factor(grupos)
+```
+
+8. Promedios por clúster
+
+Calculamos los promedios de cada variable numérica por clúster para caracterizar a cada grupo y entender qué los diferencia.
+
+```{r}
+library(dplyr)
+data_escalada%>%
+  group_by(Cluster) %>%
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
+```
+
+
+  
+
+*Clúster K-medias:* particiona los datos en k grupos al minimizar la varianza dentro de cada clúster.
+
+Es un método particional: divide directamente los datos en k grupos. Funciona minimizando la variabilidad interna dentro de cada clúster (inercia).
+
+- Definir el número de clústeres k.
+
+- Inicializar k centros aleatorios.
+
+- Asignar cada observación al centro más cercano.
+
+- Recalcular los centros como el promedio de las observaciones en cada grupo.
+
+- Repetir pasos 3–4 hasta que no cambien los grupos
+
+*Ventajas* 
+
+- Muy eficiente en grandes bases de datos.
+
+- Fácil de interpretar y aplicar.
+
+*Desventajas*
+
+- Requiere definir k antes de empezar.
+
+- Sensible a valores atípicos y a la escala de los datos.
+
+- Puede converger a soluciones subóptimas si los centros se inicializan mal (por eso se usa nstart = 25, por ejemplo, para mejorar la solución)
+
+
+
+*1. Determinar el número óptimo de clústeres*
+
+Antes de aplicar k-medias, se recomienda determinar el número óptimo de clústeres. Una técnica muy usada es el método del codo (elbow method), que evalúa la variación dentro de los grupos (WSS).
+
+```{r}
+data_escalada <- na.omit(data_escalada)
+```
+
+
+```{r}
+library(factoextra)
+fviz_nbclust(data_escalada, kmeans, method = "wss") +
+  labs(title = "Método del codo para determinar K óptimo")
+```
+
+
+  
+- Observa en el gráfico el punto donde la curva “deja de bajar bruscamente” — ahí estaría el número ideal de clústeres.
+
+*3. Aplicar el algoritmo de k-medias (k = 4)*
+
+Usamos kmeans() con k = 4 como ejemplo (puedes ajustar según el gráfico anterior). También se recomienda usar nstart = 25 para mejorar la estabilidad del resultado (intenta 25 inicializaciones distintas).
+
+```{r}
+set.seed(123)  # para reproducibilidad
+kmeans_result <- kmeans(data_escalada, centers = 4, nstart = 25)
+```
+
+
+*Ver número de casos por grupo*
+
+```{r}
+kmeans_result$size
+```
+
+*4. Asignar clústeres al dataframe original*
+
+Agregamos la asignación del clúster como una nueva columna en el dataframe original. Esto nos permitirá analizar las diferencias entre grupos.
+
+```{r}
+data_escalada$Cluster_kmeans <- as.factor(kmeans_result$cluster)
+```
+
+*5. Visualización de los clústeres*
+
+Graficamos los clústeres usando reducción de dimensiones (PCA) para representar los datos en 2D y colorearlos por clúster.
+
+```{r}
+library(factoextra)
+#fviz_cluster(kmeans_result, data = data_escalada,
+            #palette = "jco",
+             #ggtheme = theme_minimal(),
+             #main = "Clústeres K-means")
+
+```
+
+
+*6. Comparar promedios por clúster*
+
+Este paso nos ayuda a interpretar cada grupo: qué valores promedio tiene cada clúster en las variables numéricas.
+
+```{r}
+data_escalada %>%
+  group_by(Cluster_kmeans) %>%
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))
+```
+```{r}
+# Crear tabla con países y su clúster asignado
+tabla_cluster_paises <- data.frame(
+  Pais = rownames(data_escalada),
+  Cluster = as.factor(kmeans_result$cluster)
+)
+
+# Ver tabla ordenada por clúster
+tabla_cluster_paises <- tabla_cluster_paises %>% arrange(Cluster)
+
+# Mostrar la tabla
+print(tabla_cluster_paises)
+
+```
 
 
 <br></br>

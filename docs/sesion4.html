@@ -301,6 +301,9 @@ $(document).ready(function () {
     <li>
       <a href="sesion7.html">Organización de datos</a>
     </li>
+    <li>
+      <a href="sesion8.html">Juntar bases de datos</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -336,13 +339,280 @@ class="section level2">
 <h2>Docente: Marylia Cruz <br></h2>
 <hr />
 </div>
-<div id="introducción-a-r" class="section level2">
-<h2><strong>Introducción a R</strong></h2>
+<div id="objetivo" class="section level2">
+<h2><strong>Objetivo</strong></h2>
+<p>Aplicar técnicas de análisis de clúster (jerárquico y k-medias) a un
+conjunto de datos para identificar agrupaciones de observaciones con
+características similares.</p>
+<p>El análisis de clúster es una técnica de clasificación no supervisada
+que permite agrupar observaciones con base en su similitud. Entre los
+métodos más comunes están:</p>
+</div>
+</div>
+<div id="clúster-jerárquico" class="section level1">
+<h1>Clúster Jerárquico</h1>
+<p><em>Clúster Jerárquico:</em> agrupa observaciones de forma
+aglomerativa o divisiva, creando un dendrograma.</p>
+<ul>
+<li>Este método agrupa las observaciones progresivamente en una
+estructura en forma de árbol, conocida como dendrograma. Existen dos
+enfoques:</li>
+</ul>
+<p>Aglomerativo (el más usado): parte de cada observación como su propio
+grupo y las va uniendo.</p>
+<p>Divisivo: parte de un solo grupo y lo va dividiendo.</p>
+<ol style="list-style-type: decimal">
+<li><p>Calcular la matriz de distancias entre todas las
+observaciones.</p></li>
+<li><p>Unir los grupos más cercanos (según un criterio de enlace: Ward,
+promedio, completo, etc.).</p></li>
+<li><p>Repetir hasta que todos estén en un solo clúster.</p></li>
+<li><p>Elegir un número de clústeres cortando el dendrograma a cierta
+altura.</p></li>
+</ol>
+<p><em>Ventajas</em></p>
+<ul>
+<li><p>No requiere definir previamente el número de clústeres.</p></li>
+<li><p>Permite ver cómo se forman los grupos a lo largo del
+proceso.</p></li>
+<li><p>Útil para datos pequeños o exploratorios</p></li>
+</ul>
+<p><em>Desventajas</em></p>
+<ul>
+<li><p>Poco eficiente para grandes volúmenes de datos.</p></li>
+<li><p>Decisiones iniciales (como el método de enlace) afectan el
+resultado.</p></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Cargar datos</li>
+</ol>
+<pre class="r"><code>library(rio)
+data=import(&quot;data_wvs_consolidada.xlsx&quot;)</code></pre>
+<pre class="r"><code>rownames(data) &lt;- data$Country</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Preparar datos numéricos y escalar</li>
+</ol>
+<pre class="r"><code>library(dplyr)
+# Escalamos los datos para evitar sesgos por diferencias de magnitud
+
+data_numerica &lt;- data %&gt;% 
+  dplyr::select(-Country) %&gt;% 
+  dplyr::select_if(is.numeric)
+
+
+data_escalada=scale(data_numerica)
+data_escalada=as.data.frame(data_escalada)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Calcular matriz de distancias</li>
+</ol>
+<p>Calculamos las distancias euclidianas entre todas las observaciones.
+Esta matriz será la base para formar los grupos.</p>
+<pre class="r"><code>distancias &lt;- dist(data_escalada, method = &quot;euclidean&quot;)</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Aplicar clúster jerárquico (método Ward)</li>
+</ol>
+<p>Utilizamos el método aglomerativo de Ward (ward.D2), que minimiza la
+varianza dentro de cada grupo al ir fusionando observaciones.</p>
+<pre class="r"><code>hc &lt;- hclust(distancias, method = &quot;ward.D2&quot;)</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Visualizar dendrograma</li>
+</ol>
+<p>El dendrograma muestra gráficamente cómo se agrupan las observaciones
+paso a paso. Podemos elegir el número de clústeres “cortando” el árbol a
+cierta altura. Aquí sugerimos usar 4 grupos.</p>
+<pre class="r"><code>plot(hc, hang = -1, main = &quot;Dendrograma de Clúster Jerárquico&quot;)</code></pre>
+<p><img src="sesion4_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<ul>
+<li>Añadimos colores para visualizar 4 clústeres</li>
+</ul>
+<pre class="r"><code>#rect.hclust(hc, k = 4, border = 2:5)</code></pre>
+<p><em>6. Cortar en 4 clústeres</em></p>
+<p>Asignamos cada observación a uno de los 4 grupos, según el corte que
+hicimos en el dendrograma.</p>
+<pre class="r"><code>grupos &lt;- cutree(hc, k = 4)</code></pre>
+<ul>
+<li>Revisamos cuántas observaciones hay en cada grupo</li>
+</ul>
+<pre class="r"><code>table(grupos) </code></pre>
+<pre><code>## grupos
+##  1  2  3  4 
+## 22 22 23 21</code></pre>
+<ol start="7" style="list-style-type: decimal">
+<li>Agregar clúster al dataframe original</li>
+</ol>
+<p>Agregamos la asignación de clúster como una nueva variable en el
+conjunto de datos original. Esto permite luego comparar perfiles de
+grupo.</p>
+<pre class="r"><code>data_escalada$Cluster &lt;- as.factor(grupos)</code></pre>
+<ol start="8" style="list-style-type: decimal">
+<li>Promedios por clúster</li>
+</ol>
+<p>Calculamos los promedios de cada variable numérica por clúster para
+caracterizar a cada grupo y entender qué los diferencia.</p>
+<pre class="r"><code>library(dplyr)
+data_escalada%&gt;%
+  group_by(Cluster) %&gt;%
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))</code></pre>
+<pre><code>## # A tibble: 4 × 5
+##   Cluster Justificable_Abortion Justificable_Homosexu…¹ Justificable_Sex_bef…² Justificable_Divorce
+##   &lt;fct&gt;                   &lt;dbl&gt;                   &lt;dbl&gt;                  &lt;dbl&gt;                &lt;dbl&gt;
+## 1 1                     -1.01                  -1.09                    -1.17                -1.26 
+## 2 2                      1.41                   1.42                     1.48                 1.31 
+## 3 3                      0.0433                -0.00369                  0.568                0.295
+## 4 4                     -0.460                 -0.469                   -0.160               -0.376
+## # ℹ abbreviated names: ¹​Justificable_Homosexuality, ²​Justificable_Sex_before_marriage</code></pre>
+<p><em>Clúster K-medias:</em> particiona los datos en k grupos al
+minimizar la varianza dentro de cada clúster.</p>
+<p>Es un método particional: divide directamente los datos en k grupos.
+Funciona minimizando la variabilidad interna dentro de cada clúster
+(inercia).</p>
+<ul>
+<li><p>Definir el número de clústeres k.</p></li>
+<li><p>Inicializar k centros aleatorios.</p></li>
+<li><p>Asignar cada observación al centro más cercano.</p></li>
+<li><p>Recalcular los centros como el promedio de las observaciones en
+cada grupo.</p></li>
+<li><p>Repetir pasos 3–4 hasta que no cambien los grupos</p></li>
+</ul>
+<p><em>Ventajas</em></p>
+<ul>
+<li><p>Muy eficiente en grandes bases de datos.</p></li>
+<li><p>Fácil de interpretar y aplicar.</p></li>
+</ul>
+<p><em>Desventajas</em></p>
+<ul>
+<li><p>Requiere definir k antes de empezar.</p></li>
+<li><p>Sensible a valores atípicos y a la escala de los datos.</p></li>
+<li><p>Puede converger a soluciones subóptimas si los centros se
+inicializan mal (por eso se usa nstart = 25, por ejemplo, para mejorar
+la solución)</p></li>
+</ul>
+<p><em>1. Determinar el número óptimo de clústeres</em></p>
+<p>Antes de aplicar k-medias, se recomienda determinar el número óptimo
+de clústeres. Una técnica muy usada es el método del codo (elbow
+method), que evalúa la variación dentro de los grupos (WSS).</p>
+<pre class="r"><code>data_escalada &lt;- na.omit(data_escalada)</code></pre>
+<pre class="r"><code>library(factoextra)</code></pre>
+<pre><code>## Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa</code></pre>
+<pre class="r"><code>fviz_nbclust(data_escalada, kmeans, method = &quot;wss&quot;) +
+  labs(title = &quot;Método del codo para determinar K óptimo&quot;)</code></pre>
+<p><img src="sesion4_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<ul>
+<li>Observa en el gráfico el punto donde la curva “deja de bajar
+bruscamente” — ahí estaría el número ideal de clústeres.</li>
+</ul>
+<p><em>3. Aplicar el algoritmo de k-medias (k = 4)</em></p>
+<p>Usamos kmeans() con k = 4 como ejemplo (puedes ajustar según el
+gráfico anterior). También se recomienda usar nstart = 25 para mejorar
+la estabilidad del resultado (intenta 25 inicializaciones
+distintas).</p>
+<pre class="r"><code>set.seed(123)  # para reproducibilidad
+kmeans_result &lt;- kmeans(data_escalada, centers = 4, nstart = 25)</code></pre>
+<p><em>Ver número de casos por grupo</em></p>
+<pre class="r"><code>kmeans_result$size</code></pre>
+<pre><code>## [1] 15 16 17 11</code></pre>
+<p><em>4. Asignar clústeres al dataframe original</em></p>
+<p>Agregamos la asignación del clúster como una nueva columna en el
+dataframe original. Esto nos permitirá analizar las diferencias entre
+grupos.</p>
+<pre class="r"><code>data_escalada$Cluster_kmeans &lt;- as.factor(kmeans_result$cluster)</code></pre>
+<p><em>5. Visualización de los clústeres</em></p>
+<p>Graficamos los clústeres usando reducción de dimensiones (PCA) para
+representar los datos en 2D y colorearlos por clúster.</p>
+<pre class="r"><code>library(factoextra)
+#fviz_cluster(kmeans_result, data = data_escalada,
+            #palette = &quot;jco&quot;,
+             #ggtheme = theme_minimal(),
+             #main = &quot;Clústeres K-means&quot;)</code></pre>
+<p><em>6. Comparar promedios por clúster</em></p>
+<p>Este paso nos ayuda a interpretar cada grupo: qué valores promedio
+tiene cada clúster en las variables numéricas.</p>
+<pre class="r"><code>data_escalada %&gt;%
+  group_by(Cluster_kmeans) %&gt;%
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))</code></pre>
+<pre><code>## # A tibble: 4 × 5
+##   Cluster_kmeans Justificable_Abortion Justificable_Homosexuality Justificable_Sex_before_marriage
+##   &lt;fct&gt;                          &lt;dbl&gt;                      &lt;dbl&gt;                            &lt;dbl&gt;
+## 1 1                             -0.153                      0.173                            0.568
+## 2 2                             -0.513                     -0.363                           -0.160
+## 3 3                             -1.07                      -1.10                            -1.18 
+## 4 4                              1.18                       1.38                             1.48 
+## # ℹ 1 more variable: Justificable_Divorce &lt;dbl&gt;</code></pre>
+<pre class="r"><code># Crear tabla con países y su clúster asignado
+tabla_cluster_paises &lt;- data.frame(
+  Pais = rownames(data_escalada),
+  Cluster = as.factor(kmeans_result$cluster)
+)
+
+# Ver tabla ordenada por clúster
+tabla_cluster_paises &lt;- tabla_cluster_paises %&gt;% arrange(Cluster)
+
+# Mostrar la tabla
+print(tabla_cluster_paises)</code></pre>
+<pre><code>##                                  Pais Cluster
+## Argentina                   Argentina       1
+## Brazil                         Brazil       1
+## Chile                           Chile       1
+## Cyprus                         Cyprus       1
+## Greece                         Greece       1
+## Hong Kong                   Hong Kong       1
+## Macau                           Macau       1
+## Mexico                         Mexico       1
+## Puerto Rico               Puerto Rico       1
+## Russian Federation Russian Federation       1
+## Slovakia                     Slovakia       1
+## Taiwan                         Taiwan       1
+## Ukraine                       Ukraine       1
+## Venezuela                   Venezuela       1
+## Viet Nam                     Viet Nam       1
+## Bolivia                       Bolivia       2
+## Colombia                     Colombia       2
+## Ecuador                       Ecuador       2
+## Guatemala                   Guatemala       2
+## Kazakhstan                 Kazakhstan       2
+## Kenya                           Kenya       2
+## Malaysia                     Malaysia       2
+## Mongolia                     Mongolia       2
+## Morocco                       Morocco       2
+## Nicaragua                   Nicaragua       2
+## Peru                             Peru       2
+## Philippines               Philippines       2
+## Romania                       Romania       2
+## Singapore                   Singapore       2
+## South Korea               South Korea       2
+## Thailand                     Thailand       2
+## Armenia                       Armenia       3
+## Bangladesh                 Bangladesh       3
+## Burma (Myanmar)       Burma (Myanmar)       3
+## China                           China       3
+## Ethiopia                     Ethiopia       3
+## India                           India       3
+## Indonesia                   Indonesia       3
+## Iran                             Iran       3
+## Jordan                         Jordan       3
+## Kyrgyzstan                 Kyrgyzstan       3
+## Lebanon                       Lebanon       3
+## Libya                           Libya       3
+## Nigeria                       Nigeria       3
+## Pakistan                     Pakistan       3
+## Tunisia                       Tunisia       3
+## Turkey                         Turkey       3
+## Zimbabwe                     Zimbabwe       3
+## Andorra                       Andorra       4
+## Australia                   Australia       4
+## Canada                         Canada       4
+## Czech Republic         Czech Republic       4
+## Germany                       Germany       4
+## Japan                           Japan       4
+## Netherlands               Netherlands       4
+## New Zealand               New Zealand       4
+## United Kingdom         United Kingdom       4
+## United States           United States       4
+## Uruguay                       Uruguay       4</code></pre>
 <p><br></br></p>
 </style>
 <p><a href=""> <button>Descargar la base de datos</button> </a></p>
 <p><br></br> <a href="#beginning">Go to page beginning</a></p>
-</div>
 </div>
 
 

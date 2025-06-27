@@ -31,6 +31,8 @@ navbar:
       menu:
       - text: "Organización de datos"
         href: sesion7.html
+      - text: "Juntar bases de datos"
+        href: sesion8.html
 
 
 output:

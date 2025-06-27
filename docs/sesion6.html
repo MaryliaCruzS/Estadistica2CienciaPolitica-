@@ -301,6 +301,9 @@ $(document).ready(function () {
     <li>
       <a href="sesion7.html">Organización de datos</a>
     </li>
+    <li>
+      <a href="sesion8.html">Juntar bases de datos</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -600,9 +603,14 @@ tipo de intervención recibida) afectan su duración activa.</li>
 </ul>
 <pre class="r"><code># Paso 1: Cargar librerías necesarias
 library(survival)
-library(survminer)
-
-# Cargar base de datos
+library(survminer)</code></pre>
+<pre><code>## Loading required package: ggpubr</code></pre>
+<pre><code>## 
+## Attaching package: &#39;survminer&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:survival&#39;:
+## 
+##     myeloma</code></pre>
+<pre class="r"><code># Cargar base de datos
 data(&quot;ovarian&quot;)</code></pre>
 <pre><code>## Warning in data(&quot;ovarian&quot;): data set &#39;ovarian&#39; not found</code></pre>
 <pre class="r"><code>head(ovarian)</code></pre>

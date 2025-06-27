@@ -1,0 +1,90 @@
+---
+title: "Juntar bases de datos"
+output: html_document
+---
+
+<center><img src=" " width="200"/></center>
+
+**FACULTAD DE CIENCIAS SOCIALES - PUCP**<br>
+
+## Curso: POL 304 - Estadística para el análisis político 2 \| Semestre 2025 - 1 <br>
+
+## Docente: Marylia Cruz <br>
+
+------------------------------------------------------------------------
+
+## **Apertura de la base de datos**
+
+Esta base de datos corresponde a datos de la Encuesta Mundial de Valores.
+<br></br>
+
+</style>
+
+<a href="">
+  <button>Descargar la base de datos</button>
+</a>
+
+
+```{r}
+library(rio)
+data=import("data_wvs.xlsx")
+```
+
+
+```{r}
+names(data)
+```
+
+## **Funciones del paquete dplyr**
+
+El paquete dplyr es una de las herramientas más poderosas y populares del ecosistema tidyverse en R. Está diseñado para hacer que la manipulación de datos sea más eficiente, legible y coherente, especialmente cuando se trabaja con grandes bases de datos o con data.frame y tibble.
+
+
+```{r}
+library(dplyr)
+```
+
+## **select()**
+
+Seleccionar las dos columnas de la base de datos, y crear subbases de datos.
+
+```{r}
+data1 <- data[, c("Country", "Justificable_Abortion")]
+
+data2 <- data[, c("Country2", "Justificable_Homosexuality")]
+
+data3 <- data[, c("Country3", "Justificable_Sex_before_marriage")]
+
+data4 <- data[, c("Country4", "Justificable_Divorce")]
+```
+
+
+## **names()**
+Dado que tienen nombres diferentes, necesito unificar los nombres. Para cambiar de nombres.
+
+
+```{r}
+names(data2)[names(data2) == "Country2"] <- "Country"
+names(data3)[names(data3) == "Country3"] <- "Country"
+names(data4)[names(data4) == "Country4"] <- "Country"
+```
+
+## **full_join()**
+
+Unir las bases de datos con full_join por Country.
+
+```{r}
+library(dplyr)
+library(purrr)
+
+data_completa <- list(data1, data2, data3, data4) %>%
+  reduce(full_join, by = "Country")
+
+
+
+data_completa <- data_completa[1:88, ] #solo considerar las 88 filas primeras porque luego son NA
+```
+
+
+<br></br> [Go to page beginning](#beginning)
+
