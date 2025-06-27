@@ -22,7 +22,7 @@ Aplicar técnicas de análisis de clúster (jerárquico y k-medias) a un conjunt
 
 El análisis de clúster es una técnica de clasificación no supervisada que permite agrupar observaciones con base en su similitud. Entre los métodos más comunes están:
 
-# Clúster Jerárquico
+# **Clúster Jerárquico**
 
 *Clúster Jerárquico:* agrupa observaciones de forma aglomerativa o divisiva, creando un dendrograma.
 
@@ -155,6 +155,7 @@ data_escalada%>%
 ```
 
 
+# **Clúster K-medias**
   
 
 *Clúster K-medias:* particiona los datos en k grupos al minimizar la varianza dentro de cada clúster.
