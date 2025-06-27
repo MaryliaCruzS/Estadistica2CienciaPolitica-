@@ -339,6 +339,41 @@ class="section level2">
 <h2>Docente: Marylia Cruz <br></h2>
 <hr />
 </div>
+<div id="qué-es-un-clúster" class="section level2">
+<h2><strong>¿Qué es un clúster?</strong></h2>
+<p>Un clúster es un grupo de observaciones (casos, personas, países,
+etc.) que son más similares entre sí que con las observaciones de otros
+grupos.</p>
+<p>En otras palabras, el análisis de clúster busca agrupar los datos de
+forma que los elementos dentro de cada grupo sean muy parecidos, y entre
+grupos sean distintos.</p>
+<p>Este tipo de análisis es no supervisado, es decir, no parte de
+etiquetas conocidas (como categorías o clases), sino que descubre
+patrones ocultos en los datos.</p>
+</div>
+<div id="qué-es-la-matriz-de-distancia" class="section level2">
+<h2><strong>¿Qué es la matriz de distancia?</strong></h2>
+<p>Para saber qué tan parecidas o diferentes son dos observaciones,
+usamos una medida de distancia.</p>
+<p>La más común es la distancia euclidiana, que es simplemente la
+distancia “en línea recta” entre dos puntos en un espacio con múltiples
+dimensiones.</p>
+</div>
+<div id="fórmula-de-la-distancia-euclidiana" class="section level2">
+<h2>📐 Fórmula de la distancia euclidiana</h2>
+<p>La distancia euclidiana entre dos observaciones <span
+class="math inline">\(A\)</span> y <span
+class="math inline">\(B\)</span>, con <span
+class="math inline">\(n\)</span> variables, se define como:</p>
+<p><span class="math display">\[
+d(A, B) = \sqrt{(x_1^A - x_1^B)^2 + (x_2^A - x_2^B)^2 + \dots + (x_n^A -
+x_n^B)^2}
+\]</span></p>
+<p>Esta fórmula calcula la distancia en línea recta entre los puntos
+<span class="math inline">\(A\)</span> y <span
+class="math inline">\(B\)</span> en un espacio de <span
+class="math inline">\(n\)</span> dimensiones.</p>
+</div>
 <div id="objetivo" class="section level2">
 <h2><strong>Objetivo</strong></h2>
 <p>Aplicar técnicas de análisis de clúster (jerárquico y k-medias) a un
@@ -482,7 +517,7 @@ cada grupo.</p></li>
 <li><p>Muy eficiente en grandes bases de datos.</p></li>
 <li><p>Fácil de interpretar y aplicar.</p></li>
 </ul>
-<p><em>Desventajas</em></p>
+<p><strong>Desventajas</strong></p>
 <ul>
 <li><p>Requiere definir k antes de empezar.</p></li>
 <li><p>Sensible a valores atípicos y a la escala de los datos.</p></li>
@@ -490,7 +525,7 @@ cada grupo.</p></li>
 inicializan mal (por eso se usa nstart = 25, por ejemplo, para mejorar
 la solución)</p></li>
 </ul>
-<p><em>1. Determinar el número óptimo de clústeres</em></p>
+<p><strong>1. Determinar el número óptimo de clústeres</strong></p>
 <p>Antes de aplicar k-medias, se recomienda determinar el número óptimo
 de clústeres. Una técnica muy usada es el método del codo (elbow
 method), que evalúa la variación dentro de los grupos (WSS).</p>
