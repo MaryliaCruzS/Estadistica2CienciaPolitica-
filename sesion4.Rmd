@@ -40,7 +40,26 @@ d(A, B) = \sqrt{(x_1^A - x_1^B)^2 + (x_2^A - x_2^B)^2 + \dots + (x_n^A - x_n^B)^
 
 Esta fórmula calcula la distancia en línea recta entre los puntos \( A \) y \( B \) en un espacio de \( n \) dimensiones.
 
+## Ejemplo
 
+```{r}
+datos <- data.frame(
+  Pais = c("Perú", "Chile", "Noruega", "Argentina"),
+  Educacion = c(80, 85, 95, 82),
+  ConfianzaGobierno = c(30, 35, 85, 28)
+)
+
+# Usamos el nombre del país como nombre de fila
+rownames(datos) <- datos$Pais
+datos_numericos <- datos[, -1]  # Quitamos la columna "Pais"
+
+```
+
+```{r}
+distancias <- dist(datos_numericos, method = "euclidean")
+as.matrix(distancias)
+distancias
+```
 
 
 ## **Objetivo**
