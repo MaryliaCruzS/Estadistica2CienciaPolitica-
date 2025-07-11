@@ -338,9 +338,94 @@ class="section level2">
 <div id="docente-marylia-cruz" class="section level2">
 <h2>Docente: Marylia Cruz <br></h2>
 <hr />
+<p>El Análisis Factorial es una técnica estadística multivariada que
+permite identificar estructuras latentes (factores) que subyacen a un
+conjunto de variables observadas (por ejemplo, ítems de un
+cuestionario).</p>
+<ul>
+<li>Objetivo: reducir la dimensionalidad, identificar grupos de
+variables correlacionadas, y entender la estructura interna de los
+datos.</li>
+</ul>
 </div>
-<div id="introducción-a-r" class="section level2">
-<h2><strong>Introducción a R</strong></h2>
+<div id="análisis-factorial-exploratorio-afe" class="section level2">
+<h2><strong>🔍 1. Análisis Factorial Exploratorio (AFE)</strong></h2>
+<p>Es una técnica exploratoria, que se usa cuando no se conoce la
+estructura de factores que subyace a las variables. Es decir, no hay una
+hipótesis previa sobre cuántos factores hay ni qué ítems pertenecen a
+qué factor.</p>
+<ul>
+<li>🎯 Objetivo:</li>
+</ul>
+<p>Descubrir la estructura latente detrás de un conjunto de variables
+observadas.</p>
+<ul>
+<li>🧪 ¿Cuándo se usa?</li>
+</ul>
+<p>En etapas iniciales del desarrollo de un instrumento.</p>
+<p>Cuando no hay un modelo teórico claro.</p>
+<p>Para reducir la dimensionalidad de un conjunto de ítems.</p>
+<ul>
+<li>🧰 Métodos comunes:</li>
+</ul>
+<p>-Extracción: componentes principales, mínimos cuadrados, máxima
+verosimilitud.</p>
+<ul>
+<li><p>Rotación: Varimax (ortogonal), Promax (oblicua).</p></li>
+<li><p>Evaluación: KMO, test de esfericidad de Bartlett, scree plot,
+autovalores &gt; 1.</p></li>
+<li><p>📦 Ejemplo:</p></li>
+</ul>
+<p>Estás creando una escala para medir “actitudes hacia la ciencia”.
+Usas AFE para ver si tus ítems se agrupan en 2 factores (por ejemplo,
+ciencia y tecnología), sin haber definido eso previamente.</p>
+<ul>
+<li><p><strong>Etapas o pasos del AEF</strong></p></li>
+<li><p><strong>1. Verificación de adecuación de datos </strong></p></li>
+<li><p>Correlaciones entre variables.</p></li>
+<li><p>Pruebas: KMO y Bartlett.</p></li>
+<li><p><strong>2. Extracción de factores </strong></p></li>
+<li><p>Método más común: Análisis de componentes principales (PCA) o
+análisis de factores (FA).</p></li>
+<li><p><strong>3. Determinación del número de factores
+</strong></p></li>
+<li><p>Criterio de autovalores &gt; 1.</p></li>
+<li><p>Análisis del gráfico de sedimentación (scree plot).</p></li>
+<li><p>Criterios teóricos.</p></li>
+<li><p><strong>4. Rotación </strong></p></li>
+<li><p>Varimax (ortogonal) o Promax (oblicua) para interpretar mejor los
+factores.</p></li>
+<li><p><strong>5. Interpretación </strong></p></li>
+<li><p>¿Qué variables están más asociadas con qué factor?</p></li>
+<li><p><strong>En R Studio </strong></p></li>
+<li><p><strong>0. Apertura de la base de datos </strong></p></li>
+</ul>
+</div>
+<div id="análisis-factorial-confirmatorio-afc" class="section level2">
+<h2><strong>✅ 2. Análisis Factorial Confirmatorio (AFC)</strong></h2>
+<p>Es una técnica confirmatoria, basada en un modelo teórico o hipótesis
+previa. Aquí ya sabes cuántos factores hay y qué ítems deberían cargar
+en cada factor, y deseas comprobar si los datos empíricos validan ese
+modelo.</p>
+<ul>
+<li><p>🎯 Objetivo: Validar un modelo factorial específico y estimar qué
+tan bien se ajusta a los datos.</p></li>
+<li><p>🧪 ¿Cuándo se usa?</p></li>
+</ul>
+<p>Cuando el instrumento ya fue diseñado con base teórica. Para validar
+escalas ya existentes. En etapas avanzadas de investigación
+cuantitativa.</p>
+<ul>
+<li><p>🧰 Métodos comunes:</p></li>
+<li><p>Estimación por Máxima verosimilitud (ML) o métodos
+robustos.</p></li>
+<li><p>Evaluación del ajuste del modelo:</p></li>
+<li><p>χ² (Chi cuadrado): idealmente no significativo.</p></li>
+<li><p>CFI, TLI: &gt; 0.90</p></li>
+<li><p>RMSEA: &lt; 0.08</p></li>
+<li><p>SRMR: &lt; 0.08</p></li>
+<li><p>Se puede implementar con lavaan o sem en R.</p></li>
+</ul>
 <p><br></br></p>
 </style>
 <p><a href=""> <button>Descargar la base de datos</button> </a></p>

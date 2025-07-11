@@ -374,6 +374,30 @@ x_n^B)^2}
 class="math inline">\(B\)</span> en un espacio de <span
 class="math inline">\(n\)</span> dimensiones.</p>
 </div>
+<div id="ejemplo" class="section level2">
+<h2>Ejemplo</h2>
+<pre class="r"><code>datos &lt;- data.frame(
+  Pais = c(&quot;Perú&quot;, &quot;Chile&quot;, &quot;Noruega&quot;, &quot;Argentina&quot;),
+  Educacion = c(80, 85, 95, 82),
+  ConfianzaGobierno = c(30, 35, 85, 28)
+)
+
+# Usamos el nombre del país como nombre de fila
+rownames(datos) &lt;- datos$Pais
+datos_numericos &lt;- datos[, -1]  # Quitamos la columna &quot;Pais&quot;</code></pre>
+<pre class="r"><code>distancias &lt;- dist(datos_numericos, method = &quot;euclidean&quot;)
+as.matrix(distancias)</code></pre>
+<pre><code>##                Perú     Chile  Noruega Argentina
+## Perú       0.000000  7.071068 57.00877  2.828427
+## Chile      7.071068  0.000000 50.99020  7.615773
+## Noruega   57.008771 50.990195  0.00000 58.463664
+## Argentina  2.828427  7.615773 58.46366  0.000000</code></pre>
+<pre class="r"><code>distancias</code></pre>
+<pre><code>##                Perú     Chile   Noruega
+## Chile      7.071068                    
+## Noruega   57.008771 50.990195          
+## Argentina  2.828427  7.615773 58.463664</code></pre>
+</div>
 <div id="objetivo" class="section level2">
 <h2><strong>Objetivo</strong></h2>
 <p>Aplicar técnicas de análisis de clúster (jerárquico y k-medias) a un
@@ -456,7 +480,7 @@ varianza dentro de cada grupo al ir fusionando observaciones.</p>
 paso a paso. Podemos elegir el número de clústeres “cortando” el árbol a
 cierta altura. Aquí sugerimos usar 4 grupos.</p>
 <pre class="r"><code>plot(hc, hang = -1, main = &quot;Dendrograma de Clúster Jerárquico&quot;)</code></pre>
-<p><img src="sesion4_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="sesion4_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <ul>
 <li>Añadimos colores para visualizar 4 clústeres</li>
 </ul>
@@ -530,10 +554,11 @@ la solución)</p></li>
 de clústeres. Una técnica muy usada es el método del codo (elbow
 method), que evalúa la variación dentro de los grupos (WSS).</p>
 <pre class="r"><code>data_escalada &lt;- na.omit(data_escalada)</code></pre>
-<pre class="r"><code>library(factoextra)
-fviz_nbclust(data_escalada, kmeans, method = &quot;wss&quot;) +
+<pre class="r"><code>library(factoextra)</code></pre>
+<pre><code>## Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa</code></pre>
+<pre class="r"><code>fviz_nbclust(data_escalada, kmeans, method = &quot;wss&quot;) +
   labs(title = &quot;Método del codo para determinar K óptimo&quot;)</code></pre>
-<p><img src="sesion4_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="sesion4_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <ul>
 <li>Observa en el gráfico el punto donde la curva “deja de bajar
 bruscamente” — ahí estaría el número ideal de clústeres.</li>
