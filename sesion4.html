@@ -553,9 +553,8 @@ la solución)</p></li>
 de clústeres. Una técnica muy usada es el método del codo (elbow
 method), que evalúa la variación dentro de los grupos (WSS).</p>
 <pre class="r"><code>data_escalada &lt;- na.omit(data_escalada)</code></pre>
-<pre class="r"><code>library(factoextra)</code></pre>
-<pre><code>## Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa</code></pre>
-<pre class="r"><code>fviz_nbclust(data_escalada, kmeans, method = &quot;wss&quot;) +
+<pre class="r"><code>library(factoextra)
+fviz_nbclust(data_escalada, kmeans, method = &quot;wss&quot;) +
   labs(title = &quot;Método del codo para determinar K óptimo&quot;)</code></pre>
 <p><img src="sesion4_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <ul>

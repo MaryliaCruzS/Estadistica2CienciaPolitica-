@@ -204,7 +204,7 @@ Sin embargo, en haras de la intepretación vamos a colocar 2.
 fa(confianza,nfactors = 2,fm="ml")
 ```
 
-Intrepetamos según las cargas factoriales mayores a 2.
+Interpretamos según las cargas factoriales mayores a 2.
 
 ```{r}
 factores2=fa(confianza,nfactors = 2,fm="ml",rotate = "varimax")

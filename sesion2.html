@@ -674,24 +674,12 @@ controla la sobredispersión:<br />
 - Si <span class="math inline">\(\theta \to \infty\)</span>, se aproxima
 al modelo de Poisson. - Si <span class="math inline">\(\theta\)</span>
 es pequeño, hay mucha sobredispersión.</p>
-<pre class="r"><code>library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code># Este paso no es necesario, sirve para quedarnos solo con los departamentos con número de eventos de protestas menor a 100 en el aña 2022
+<pre class="r"><code>library(dplyr)
+# Este paso no es necesario, sirve para quedarnos solo con los departamentos con número de eventos de protestas menor a 100 en el aña 2022
 data=filter(data,EventosdeProtestas&lt;100)</code></pre>
-<pre class="r"><code>library(MASS)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;MASS&#39;</code></pre>
-<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     select</code></pre>
-<pre class="r"><code>modelo_nb &lt;- glm.nb(EventosdeProtestas ~ Salud + Educacion+Institucional, data = data)
+<pre class="r"><code>library(MASS)
+
+modelo_nb &lt;- glm.nb(EventosdeProtestas ~ Salud + Educacion+Institucional, data = data)
 summary(modelo_nb)</code></pre>
 <pre><code>## 
 ## Call:
