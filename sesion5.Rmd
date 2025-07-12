@@ -112,6 +112,121 @@ En etapas avanzadas de investigación cuantitativa.
 
 - Se puede implementar con lavaan o sem en R.
 
+```{r}
+library(rio)
+data=import("Peru2023.sav")
+#names(data)
+```
+
+- Seleccionamos las variables que emplearemos
+
+```{r,message=FALSE}
+library(dplyr)
+confianza=data %>% 
+  select(b12,b13,b18,b21,b21a,b31,b32,b37)
+
+```
+
+
+- Omitimos los NA
+
+
+```{r}
+confianza=na.omit(confianza)
+```
+
+- Calculamos la matriz de correlaciones
+
+```{r}
+matriz_correlaciones=cor(confianza)
+```
+
+
+- Gráfico de Matriz de correlaciones
+
+```{r,message=FALSE, warning=FALSE}
+library(corrplot)
+corrplot(matriz_correlaciones,method = "circle",typer="upper")
+```
+
+-
+
+```{r,message=FALSE, warning=FALSE}
+library(corrplot)
+corrplot(matriz_correlaciones, method = 'number')
+```
+
+
+```{r}
+library(psych)
+KMO(confianza)
+```
+
+
+```{r}
+cortest.bartlett(matriz_correlaciones)
+```
+
+
+```{r}
+fa.parallel(confianza,fa="fa",n.iter = 100,show.legend = TRUE)
+```
+
+```{r}
+eigenvalues=eigen(matriz_correlaciones)$values
+```
+
+
+```{r}
+library(tibble)
+library(ggplot2)
+
+df_eigen=tibble(
+  Factor=1:length(eigenvalues),
+  Autovalor=eigenvalues
+)
+```
+
+
+```{r}
+ggplot(df_eigen, aes(x=Factor, y=Autovalor))+
+  geom_line(group=1)+
+  geom_point(size=3)+
+  geom_hline(yintercept=1, linetype="dashed",color="red")+
+  labs(title="Scree plot con ggplot2", x="Número de factor",y="Autovalor")+theme_minimal()
+```
+
+- Según el gráfico solo se debe calcular un indicador. 
+Sin embargo, en haras de la intepretación vamos a colocar 2.
+
+
+```{r}
+fa(confianza,nfactors = 2,fm="ml")
+```
+
+Intrepetamos según las cargas factoriales mayores a 2.
+
+```{r}
+factores2=fa(confianza,nfactors = 2,fm="ml",rotate = "varimax")
+factores2
+```
+
+
+```{r}
+scores=factores2$scores
+```
+
+```{r}
+data2=cbind(confianza,scores)
+```
+
+```{r,message=TRUE}
+library(scales)
+data2$Confianza_RPoliticas=rescale(data2$ML1, to=c(0,100))
+
+data2$Confianza_Represion=rescale(data2$ML2, to=c(0,100))
+```
+
 
 <br></br>
 

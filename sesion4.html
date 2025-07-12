@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Clusters</title>
+
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Estadística para el Análisis Político 2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Inicio</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Unidad 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="sesion1.html">Modelo Lineal</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Unidad 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="sesion2.html">Regresión De Poisson</a>
+    </li>
+    <li>
+      <a href="sesion3.html">Regresión Logistica Binaria</a>
+    </li>
+    <li>
+      <a href="sesion6.html">Eventos históricos</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Unidad 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="sesion4.html">Clusters</a>
+    </li>
+    <li>
+      <a href="sesion5.html">Análisis Factorial</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Extras
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="sesion7.html">Organización de datos</a>
+    </li>
+    <li>
+      <a href="sesion8.html">Juntar bases de datos</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Clusters</h1>
+
+</div>
+
+
+<div id="análisis-de-clusters" class="section level1">
+<h1>Análisis de Clusters</h1>
+<center>
+<img src=" " width="200"/>
+</center>
+<p><strong>FACULTAD DE CIENCIAS SOCIALES - PUCP</strong><br></p>
+<div
+id="curso-pol-304---estadística-para-el-análisis-político-2-semestre-2025---1"
+class="section level2">
+<h2>Curso: POL 304 - Estadística para el análisis político 2 | Semestre
+2025 - 1 <br></h2>
+</div>
+<div id="docente-marylia-cruz" class="section level2">
+<h2>Docente: Marylia Cruz <br></h2>
+<hr />
+</div>
+<div id="qué-es-un-clúster" class="section level2">
+<h2><strong>¿Qué es un clúster?</strong></h2>
+<p>Un clúster es un grupo de observaciones (casos, personas, países,
+etc.) que son más similares entre sí que con las observaciones de otros
+grupos.</p>
+<p>En otras palabras, el análisis de clúster busca agrupar los datos de
+forma que los elementos dentro de cada grupo sean muy parecidos, y entre
+grupos sean distintos.</p>
+<p>Este tipo de análisis es no supervisado, es decir, no parte de
+etiquetas conocidas (como categorías o clases), sino que descubre
+patrones ocultos en los datos.</p>
+</div>
+<div id="qué-es-la-matriz-de-distancia" class="section level2">
+<h2><strong>¿Qué es la matriz de distancia?</strong></h2>
+<p>Para saber qué tan parecidas o diferentes son dos observaciones,
+usamos una medida de distancia.</p>
+<p>La más común es la distancia euclidiana, que es simplemente la
+distancia “en línea recta” entre dos puntos en un espacio con múltiples
+dimensiones.</p>
+</div>
+<div id="fórmula-de-la-distancia-euclidiana" class="section level2">
+<h2>📐 Fórmula de la distancia euclidiana</h2>
+<p>La distancia euclidiana entre dos observaciones <span
+class="math inline">\(A\)</span> y <span
+class="math inline">\(B\)</span>, con <span
+class="math inline">\(n\)</span> variables, se define como:</p>
+<p><span class="math display">\[
+d(A, B) = \sqrt{(x_1^A - x_1^B)^2 + (x_2^A - x_2^B)^2 + \dots + (x_n^A -
+x_n^B)^2}
+\]</span></p>
+<p>Esta fórmula calcula la distancia en línea recta entre los puntos
+<span class="math inline">\(A\)</span> y <span
+class="math inline">\(B\)</span> en un espacio de <span
+class="math inline">\(n\)</span> dimensiones.</p>
+</div>
+<div id="ejemplo" class="section level2">
+<h2>Ejemplo</h2>
+<pre class="r"><code>datos &lt;- data.frame(
+  Pais = c(&quot;Perú&quot;, &quot;Chile&quot;, &quot;Noruega&quot;, &quot;Argentina&quot;),
+  Educacion = c(80, 85, 95, 82),
+  ConfianzaGobierno = c(30, 35, 85, 28)
+)
+
+# Usamos el nombre del país como nombre de fila
+rownames(datos) &lt;- datos$Pais
+datos_numericos &lt;- datos[, -1]  # Quitamos la columna &quot;Pais&quot;</code></pre>
+<pre class="r"><code>distancias &lt;- dist(datos_numericos, method = &quot;euclidean&quot;)
+as.matrix(distancias)</code></pre>
+<pre><code>##                Perú     Chile  Noruega Argentina
+## Perú       0.000000  7.071068 57.00877  2.828427
+## Chile      7.071068  0.000000 50.99020  7.615773
+## Noruega   57.008771 50.990195  0.00000 58.463664
+## Argentina  2.828427  7.615773 58.46366  0.000000</code></pre>
+<pre class="r"><code>distancias</code></pre>
+<pre><code>##                Perú     Chile   Noruega
+## Chile      7.071068                    
+## Noruega   57.008771 50.990195          
+## Argentina  2.828427  7.615773 58.463664</code></pre>
+</div>
+<div id="objetivo" class="section level2">
+<h2><strong>Objetivo</strong></h2>
+<p>Aplicar técnicas de análisis de clúster (jerárquico y k-medias) a un
+conjunto de datos para identificar agrupaciones de observaciones con
+características similares.</p>
+<p>El análisis de clúster es una técnica de clasificación no supervisada
+que permite agrupar observaciones con base en su similitud. Entre los
+métodos más comunes están:</p>
+</div>
+</div>
+<div id="clúster-jerárquico" class="section level1">
+<h1><strong>Clúster Jerárquico</strong></h1>
+<p><em>Clúster Jerárquico:</em> agrupa observaciones de forma
+aglomerativa o divisiva, creando un dendrograma.</p>
+<ul>
+<li>Este método agrupa las observaciones progresivamente en una
+estructura en forma de árbol, conocida como dendrograma. Existen dos
+enfoques:</li>
+</ul>
+<p>Aglomerativo (el más usado): parte de cada observación como su propio
+grupo y las va uniendo.</p>
+<p>Divisivo: parte de un solo grupo y lo va dividiendo.</p>
+<ol style="list-style-type: decimal">
+<li><p>Calcular la matriz de distancias entre todas las
+observaciones.</p></li>
+<li><p>Unir los grupos más cercanos (según un criterio de enlace: Ward,
+promedio, completo, etc.).</p></li>
+<li><p>Repetir hasta que todos estén en un solo clúster.</p></li>
+<li><p>Elegir un número de clústeres cortando el dendrograma a cierta
+altura.</p></li>
+</ol>
+<p><em>Ventajas</em></p>
+<ul>
+<li><p>No requiere definir previamente el número de clústeres.</p></li>
+<li><p>Permite ver cómo se forman los grupos a lo largo del
+proceso.</p></li>
+<li><p>Útil para datos pequeños o exploratorios</p></li>
+</ul>
+<p><em>Desventajas</em></p>
+<ul>
+<li><p>Poco eficiente para grandes volúmenes de datos.</p></li>
+<li><p>Decisiones iniciales (como el método de enlace) afectan el
+resultado.</p></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>Cargar datos</li>
+</ol>
+<pre class="r"><code>library(rio)
+data=import(&quot;data_wvs_consolidada.xlsx&quot;)</code></pre>
+<pre class="r"><code>rownames(data) &lt;- data$Country</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Preparar datos numéricos y escalar</li>
+</ol>
+<pre class="r"><code>library(dplyr)
+# Escalamos los datos para evitar sesgos por diferencias de magnitud
+
+data_numerica &lt;- data %&gt;% 
+  dplyr::select(-Country) %&gt;% 
+  dplyr::select_if(is.numeric)
+
+
+data_escalada=scale(data_numerica)
+data_escalada=as.data.frame(data_escalada)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Calcular matriz de distancias</li>
+</ol>
+<p>Calculamos las distancias euclidianas entre todas las observaciones.
+Esta matriz será la base para formar los grupos.</p>
+<pre class="r"><code>distancias &lt;- dist(data_escalada, method = &quot;euclidean&quot;)</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Aplicar clúster jerárquico (método Ward)</li>
+</ol>
+<p>Utilizamos el método aglomerativo de Ward (ward.D2), que minimiza la
+varianza dentro de cada grupo al ir fusionando observaciones.</p>
+<pre class="r"><code>hc &lt;- hclust(distancias, method = &quot;ward.D2&quot;)</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Visualizar dendrograma</li>
+</ol>
+<p>El dendrograma muestra gráficamente cómo se agrupan las observaciones
+paso a paso. Podemos elegir el número de clústeres “cortando” el árbol a
+cierta altura. Aquí sugerimos usar 4 grupos.</p>
+<pre class="r"><code>plot(hc, hang = -1, main = &quot;Dendrograma de Clúster Jerárquico&quot;)</code></pre>
+<p><img src="sesion4_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<ul>
+<li>Añadimos colores para visualizar 4 clústeres</li>
+</ul>
+<pre class="r"><code>#rect.hclust(hc, k = 4, border = 2:5)</code></pre>
+<p><em>6. Cortar en 4 clústeres</em></p>
+<p>Asignamos cada observación a uno de los 4 grupos, según el corte que
+hicimos en el dendrograma.</p>
+<pre class="r"><code>grupos &lt;- cutree(hc, k = 4)</code></pre>
+<ul>
+<li>Revisamos cuántas observaciones hay en cada grupo</li>
+</ul>
+<pre class="r"><code>table(grupos) </code></pre>
+<pre><code>## grupos
+##  1  2  3  4 
+## 22 22 23 21</code></pre>
+<ol start="7" style="list-style-type: decimal">
+<li>Agregar clúster al dataframe original</li>
+</ol>
+<p>Agregamos la asignación de clúster como una nueva variable en el
+conjunto de datos original. Esto permite luego comparar perfiles de
+grupo.</p>
+<pre class="r"><code>data_escalada$Cluster &lt;- as.factor(grupos)</code></pre>
+<ol start="8" style="list-style-type: decimal">
+<li>Promedios por clúster</li>
+</ol>
+<p>Calculamos los promedios de cada variable numérica por clúster para
+caracterizar a cada grupo y entender qué los diferencia.</p>
+<pre class="r"><code>library(dplyr)
+data_escalada%&gt;%
+  group_by(Cluster) %&gt;%
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))</code></pre>
+<pre><code>## # A tibble: 4 × 5
+##   Cluster Justificable_Abortion Justificable_Homosexuality Justificable_Sex_before_marriage Justificable_Divorce
+##   &lt;fct&gt;                   &lt;dbl&gt;                      &lt;dbl&gt;                            &lt;dbl&gt;                &lt;dbl&gt;
+## 1 1                     -1.01                     -1.09                              -1.17                -1.26 
+## 2 2                      1.41                      1.42                               1.48                 1.31 
+## 3 3                      0.0433                   -0.00369                            0.568                0.295
+## 4 4                     -0.460                    -0.469                             -0.160               -0.376</code></pre>
+</div>
+<div id="clúster-k-medias" class="section level1">
+<h1><strong>Clúster K-medias</strong></h1>
+<p><em>Clúster K-medias:</em> particiona los datos en k grupos al
+minimizar la varianza dentro de cada clúster.</p>
+<p>Es un método particional: divide directamente los datos en k grupos.
+Funciona minimizando la variabilidad interna dentro de cada clúster
+(inercia).</p>
+<ul>
+<li><p>Definir el número de clústeres k.</p></li>
+<li><p>Inicializar k centros aleatorios.</p></li>
+<li><p>Asignar cada observación al centro más cercano.</p></li>
+<li><p>Recalcular los centros como el promedio de las observaciones en
+cada grupo.</p></li>
+<li><p>Repetir pasos 3–4 hasta que no cambien los grupos</p></li>
+</ul>
+<p><em>Ventajas</em></p>
+<ul>
+<li><p>Muy eficiente en grandes bases de datos.</p></li>
+<li><p>Fácil de interpretar y aplicar.</p></li>
+</ul>
+<p><strong>Desventajas</strong></p>
+<ul>
+<li><p>Requiere definir k antes de empezar.</p></li>
+<li><p>Sensible a valores atípicos y a la escala de los datos.</p></li>
+<li><p>Puede converger a soluciones subóptimas si los centros se
+inicializan mal (por eso se usa nstart = 25, por ejemplo, para mejorar
+la solución)</p></li>
+</ul>
+<p><strong>1. Determinar el número óptimo de clústeres</strong></p>
+<p>Antes de aplicar k-medias, se recomienda determinar el número óptimo
+de clústeres. Una técnica muy usada es el método del codo (elbow
+method), que evalúa la variación dentro de los grupos (WSS).</p>
+<pre class="r"><code>data_escalada &lt;- na.omit(data_escalada)</code></pre>
+<pre class="r"><code>library(factoextra)</code></pre>
+<pre><code>## Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa</code></pre>
+<pre class="r"><code>fviz_nbclust(data_escalada, kmeans, method = &quot;wss&quot;) +
+  labs(title = &quot;Método del codo para determinar K óptimo&quot;)</code></pre>
+<p><img src="sesion4_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<ul>
+<li>Observa en el gráfico el punto donde la curva “deja de bajar
+bruscamente” — ahí estaría el número ideal de clústeres.</li>
+</ul>
+<p><em>3. Aplicar el algoritmo de k-medias (k = 4)</em></p>
+<p>Usamos kmeans() con k = 4 como ejemplo (puedes ajustar según el
+gráfico anterior). También se recomienda usar nstart = 25 para mejorar
+la estabilidad del resultado (intenta 25 inicializaciones
+distintas).</p>
+<pre class="r"><code>set.seed(123)  # para reproducibilidad
+kmeans_result &lt;- kmeans(data_escalada, centers = 4, nstart = 25)</code></pre>
+<p><em>Ver número de casos por grupo</em></p>
+<pre class="r"><code>kmeans_result$size</code></pre>
+<pre><code>## [1] 15 16 17 11</code></pre>
+<p><em>4. Asignar clústeres al dataframe original</em></p>
+<p>Agregamos la asignación del clúster como una nueva columna en el
+dataframe original. Esto nos permitirá analizar las diferencias entre
+grupos.</p>
+<pre class="r"><code>data_escalada$Cluster_kmeans &lt;- as.factor(kmeans_result$cluster)</code></pre>
+<p><em>5. Visualización de los clústeres</em></p>
+<p>Graficamos los clústeres usando reducción de dimensiones (PCA) para
+representar los datos en 2D y colorearlos por clúster.</p>
+<pre class="r"><code>library(factoextra)
+#fviz_cluster(kmeans_result, data = data_escalada,
+            #palette = &quot;jco&quot;,
+             #ggtheme = theme_minimal(),
+             #main = &quot;Clústeres K-means&quot;)</code></pre>
+<p><em>6. Comparar promedios por clúster</em></p>
+<p>Este paso nos ayuda a interpretar cada grupo: qué valores promedio
+tiene cada clúster en las variables numéricas.</p>
+<pre class="r"><code>data_escalada %&gt;%
+  group_by(Cluster_kmeans) %&gt;%
+  summarise(across(where(is.numeric), ~mean(.x, na.rm = TRUE)))</code></pre>
+<pre><code>## # A tibble: 4 × 5
+##   Cluster_kmeans Justificable_Abortion Justificable_Homosexuality Justificable_Sex_before_marriage Justificable_Divorce
+##   &lt;fct&gt;                          &lt;dbl&gt;                      &lt;dbl&gt;                            &lt;dbl&gt;                &lt;dbl&gt;
+## 1 1                             -0.153                      0.173                            0.568                0.255
+## 2 2                             -0.513                     -0.363                           -0.160               -0.416
+## 3 3                             -1.07                      -1.10                            -1.18                -1.29 
+## 4 4                              1.18                       1.38                             1.48                 1.22</code></pre>
+<pre class="r"><code># Crear tabla con países y su clúster asignado
+tabla_cluster_paises &lt;- data.frame(
+  Pais = rownames(data_escalada),
+  Cluster = as.factor(kmeans_result$cluster)
+)
+
+# Ver tabla ordenada por clúster
+tabla_cluster_paises &lt;- tabla_cluster_paises %&gt;% arrange(Cluster)
+
+# Mostrar la tabla
+print(tabla_cluster_paises)</code></pre>
+<pre><code>##                                  Pais Cluster
+## Argentina                   Argentina       1
+## Brazil                         Brazil       1
+## Chile                           Chile       1
+## Cyprus                         Cyprus       1
+## Greece                         Greece       1
+## Hong Kong                   Hong Kong       1
+## Macau                           Macau       1
+## Mexico                         Mexico       1
+## Puerto Rico               Puerto Rico       1
+## Russian Federation Russian Federation       1
+## Slovakia                     Slovakia       1
+## Taiwan                         Taiwan       1
+## Ukraine                       Ukraine       1
+## Venezuela                   Venezuela       1
+## Viet Nam                     Viet Nam       1
+## Bolivia                       Bolivia       2
+## Colombia                     Colombia       2
+## Ecuador                       Ecuador       2
+## Guatemala                   Guatemala       2
+## Kazakhstan                 Kazakhstan       2
+## Kenya                           Kenya       2
+## Malaysia                     Malaysia       2
+## Mongolia                     Mongolia       2
+## Morocco                       Morocco       2
+## Nicaragua                   Nicaragua       2
+## Peru                             Peru       2
+## Philippines               Philippines       2
+## Romania                       Romania       2
+## Singapore                   Singapore       2
+## South Korea               South Korea       2
+## Thailand                     Thailand       2
+## Armenia                       Armenia       3
+## Bangladesh                 Bangladesh       3
+## Burma (Myanmar)       Burma (Myanmar)       3
+## China                           China       3
+## Ethiopia                     Ethiopia       3
+## India                           India       3
+## Indonesia                   Indonesia       3
+## Iran                             Iran       3
+## Jordan                         Jordan       3
+## Kyrgyzstan                 Kyrgyzstan       3
+## Lebanon                       Lebanon       3
+## Libya                           Libya       3
+## Nigeria                       Nigeria       3
+## Pakistan                     Pakistan       3
+## Tunisia                       Tunisia       3
+## Turkey                         Turkey       3
+## Zimbabwe                     Zimbabwe       3
+## Andorra                       Andorra       4
+## Australia                   Australia       4
+## Canada                         Canada       4
+## Czech Republic         Czech Republic       4
+## Germany                       Germany       4
+## Japan                           Japan       4
+## Netherlands               Netherlands       4
+## New Zealand               New Zealand       4
+## United Kingdom         United Kingdom       4
+## United States           United States       4
+## Uruguay                       Uruguay       4</code></pre>
+<p><br></br></p>
+</style>
+<p><a href=""> <button>Descargar la base de datos</button> </a></p>
+<p><br></br> <a href="#beginning">Go to page beginning</a></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
